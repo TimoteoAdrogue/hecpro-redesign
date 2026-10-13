@@ -50,6 +50,29 @@
   }
 }
 
+/* Palette B « Tableau »: the lecture-hall blackboard. Chalk text, yellow chalk frames,
+   coral chalk for warnings, teal chalk as the highlighter. Same in light and dark mode. */
+:root[data-palette="b"] {
+  --paper: #151B19;
+  --sheet: #1D2522;
+  --ink: #ECEEE7;
+  --ink-2: #A4AEA8;
+  --rule: #2D3834;
+  --grid: rgb(236 238 231 / .03);
+  --pen: #F1E2A2;
+  --red: #FF8F7C;
+  --teal: #3FD5CE;
+  --teal-ink: #3FD5CE;
+  --on-teal: #0F1A18;
+  --hl: rgb(63 213 206 / .26);
+  --ink-t: #1F2C2B;
+  --teal-t: #18312E;
+  --code-bg: #0D1110; --code-ink: #ECEEE7;
+  --shadow: 0 1px 0 rgb(0 0 0 / .35), 0 22px 44px -22px rgb(0 0 0 / .8);
+  --shadow-lg: 0 1px 0 rgb(0 0 0 / .35), 0 40px 70px -30px rgb(0 0 0 / .9);
+  color-scheme: dark;
+}
+
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(var(--head) + 16px); }
 body {
@@ -163,7 +186,9 @@ svg[aria-hidden] { width: 1.15em; height: 1.15em; fill: currentColor; flex: none
 .menu__head { height: var(--head); display: flex; align-items: center; justify-content: space-between; }
 .menu__nav { display: grid; gap: 6px; margin-top: 32px; }
 .menu__nav a { font: 500 2.1rem/1.25 var(--serif); text-decoration: none; }
-.menu__login { display: inline-block; margin-top: 40px; font: 600 1rem var(--sans); }
+.menu__cta { margin-top: 36px; width: 100%; }
+.menu__login { display: inline-block; margin-top: 22px; font: 600 1rem var(--sans); }
+.palette--menu { position: static; display: inline-flex; margin-top: 32px; box-shadow: none; }
 
 /* Hero */
 .hero { position: relative; min-height: 100dvh; padding-top: calc(var(--head) + clamp(24px, 6vh, 72px)); overflow: clip; }
@@ -308,6 +333,7 @@ svg.annot path { fill: none; stroke-dasharray: 1; stroke-dashoffset: 1; transiti
 .tile--stats { grid-area: stats; justify-content: space-between; }
 .tile--stats img { width: 100%; background: #fff; border-radius: 2px; mix-blend-mode: multiply; }
 @media (prefers-color-scheme: dark) { .tile--stats img { mix-blend-mode: normal; } }
+[data-palette="b"] .tile--stats img { mix-blend-mode: normal; }
 .tile--maths { grid-area: maths; }
 .tile--micro { grid-area: micro; background: var(--ink-t); }
 .tile--compta { grid-area: compta; }
@@ -371,6 +397,7 @@ svg.annot path { fill: none; stroke-dasharray: 1; stroke-dashoffset: 1; transiti
 .band h3 { font: 500 1.35rem/1.2 var(--serif); }
 .band p { grid-column: 1; color: var(--ink-2); max-width: 46ch; }
 .band .pack-tag { grid-column: 2; grid-row: 1; }
+.band__when, .swipe-hint { display: none; }
 .band::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--ink); transform-origin: left; }
 .band:last-of-type::before { background: var(--teal); }
 @media (prefers-reduced-motion: no-preference) {
@@ -482,6 +509,23 @@ figcaption { margin-top: 16px; font: 500 .92rem var(--sans); color: var(--ink-2)
 .foot__legal { grid-column: 1 / -1; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 32px; padding-top: 24px; border-top: 1px solid var(--rule); }
 .foot__legal p:nth-child(2) { display: flex; gap: 24px; flex-wrap: wrap; }
 
+/* Palette B extras: chalk dust on the board, chalky edges on every hand-drawn stroke */
+[data-palette="b"] body {
+  background-image: radial-gradient(120% 70% at 50% 0%, rgb(236 238 231 / .045), transparent 62%),
+    linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 100% 100vh, 22px 22px, 22px 22px;
+  background-repeat: no-repeat, repeat, repeat;
+}
+[data-palette="b"] :is(svg.annot, .tour__ink, .paper .ink) path { filter: url(#chalk); }
+[data-palette="b"] svg.annot { stroke-width: 2.4; }
+
+/* Palette switch (comparison aid, staging only) */
+.palette--float { position: fixed; left: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 45; display: flex; gap: 2px; padding: 4px; background: var(--sheet); box-shadow: var(--shadow-lg); border-radius: 2px; font: 600 .8rem/1 var(--sans); }
+.palette button { padding: 9px 12px; border-radius: 2px; color: var(--ink-2); transition: background-color .3s, color .3s; }
+.palette button:hover { color: var(--ink); }
+.palette button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+html.is-switching, html.is-switching * { transition: background-color .5s var(--ease), color .5s var(--ease), stroke .5s var(--ease), box-shadow .5s var(--ease) !important; }
+
 /* Mobile dock */
 .dock { display: none; }
 
@@ -528,10 +572,9 @@ figcaption { margin-top: 16px; font: 500 .92rem var(--sans); color: var(--ink-2)
   .tour__side, .tour__win { grid-column: 1; }
   .tour__win { order: -1; }
   .tour__after { justify-content: flex-start; }
-  .tour.is-live .tour__grid { grid-template-rows: minmax(0, 1fr) 176px; row-gap: 18px; height: calc(100dvh - var(--head) - 32px); margin-top: var(--head); }
-  .tour.is-live .tour__side { justify-content: flex-start; gap: 14px; }
-  .tour.is-live .tour__steps { height: 128px; }
-  .tour__index button { width: 30px; height: 30px; }
+  .tour.is-live .tour__grid { margin-top: var(--head); }
+  .tour.is-live .tour__side { justify-content: flex-start; }
+  .tour__index button { width: 40px; height: 40px; }
   .paper__note { font-size: .7rem; padding: 4px 8px; }
   .paper__note { right: auto; left: 6%; }
   .tour__steps p { font-size: 1.1rem; }
@@ -563,6 +606,48 @@ figcaption { margin-top: 16px; font: 500 .92rem var(--sans); color: var(--ink-2)
     transform: translateY(110%); transition: transform .45s var(--ease);
   }
   .dock.is-on { transform: none; }
+  .palette--float { display: none; }
+
+  /* Phone: facts as a compact 3-up row */
+  .facts__row { grid-template-columns: repeat(3, 1fr); }
+  .facts__row > div, .facts__row > div + div, .facts__row > div:last-child { grid-column: auto; flex-direction: column; gap: 6px; padding: 18px 0; border-top: 0; }
+  .facts__row > div + div, .facts__row > div:last-child { border-left: 1px solid var(--rule); padding-left: 12px; }
+  .facts dt { font-size: 1.9rem; min-width: 0; }
+  .facts dd { font-size: .76rem; line-height: 1.35; padding-right: 6px; }
+
+  /* Phone: subjects become a swipeable row */
+  .bento {
+    display: flex; gap: 12px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none;
+    margin-inline: calc(var(--gut) * -1); padding: 8px var(--gut) 28px; scroll-padding-inline: var(--gut);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 var(--gut), #000 calc(100% - 44px), transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 var(--gut), #000 calc(100% - 44px), transparent);
+  }
+  .bento::-webkit-scrollbar { display: none; }
+  .tile { flex: 0 0 74vw; min-height: 300px; scroll-snap-align: start; }
+  .tile--stats { flex-basis: 78vw; }
+  .js .bento .tile.reveal { opacity: 1; transform: none; } /* the next card must peek in to show the row swipes */
+  .swipe-hint { display: inline-flex; align-items: center; gap: 8px; margin-top: 4px; font: 600 .85rem var(--sans); color: var(--ink-2); }
+
+  /* Phone: the semester runs down a vertical line */
+  .axis { padding-left: 30px; gap: 30px; }
+  .axis__line { display: block; left: 6px; right: auto; top: 8px; bottom: 8px; width: 2px; height: auto; }
+  .axis__draw { transform-origin: center top; }
+  .axis__you { position: relative; left: auto; border-left: 0; padding-left: 0; }
+  .axis__you::before { display: block; left: -29px; top: 50%; translate: 0 -50%; }
+  .band::before { display: none; }
+  .band::after { content: ""; position: absolute; left: -29px; top: 22px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--ink); background: var(--paper); }
+  .band:last-of-type::after { border-color: var(--teal); }
+  .band__when { display: block; grid-column: 1 / -1; margin-top: 4px; font: 600 .8rem var(--sans); color: var(--ink-2); }
+
+  /* Phone: fiche tour with room for the caption, step buttons on top */
+  .tour.is-live .tour__grid { grid-template-rows: minmax(0, 1fr) auto; row-gap: 14px; height: calc(100dvh - var(--head) - 24px); }
+  .tour.is-live .tour__side { gap: 12px; }
+  .tour.is-live .tour__index { order: -1; }
+  .tour.is-live .tour__steps { height: 150px; }
+  .tour__steps p { font-size: 1.05rem; }
+
+  .pack { padding: 26px 22px; }
+  .pack__price { font-size: 2.8rem; }
 }
 @media (min-width: 768px) and (max-height: 760px) {
   .paper { width: min(27vw, 380px); }

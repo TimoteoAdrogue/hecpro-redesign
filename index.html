@@ -23,7 +23,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400..600;1,8..60,400..600&family=Hanken+Grotesk:wght@400..600&display=swap">
 <link rel="preload" as="image" href="assets/fiche/p1.webp" fetchpriority="high">
 <link rel="stylesheet" href="assets/site.css">
-<script>document.documentElement.classList.add('js')</script>
+<script>(function(d){d.classList.add('js');try{if(new URLSearchParams(location.search).get('palette')==='b')d.dataset.palette='b'}catch(e){}})(document.documentElement)</script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
 {"@type":"Organization","name":"HEC Pro","url":"https://www.hecpro.ch/"},
@@ -42,6 +42,7 @@
 </head>
 <body>
 <svg class="sprite" aria-hidden="true">
+  <filter id="chalk" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4"/></filter>
   <!-- Phosphor Icons (regular), copied from @phosphor-icons/core 2.1.1 -->
   <symbol id="i-arrow" viewBox="0 0 256 256"><path d="M221.66 133.66l-72 72a8 8 0 0 1-11.32-11.32L196.69 136H40a8 8 0 0 1 0-16h156.69l-58.35-58.34a8 8 0 0 1 11.32-11.32l72 72a8 8 0 0 1 0 11.32Z"/></symbol>
   <symbol id="i-check" viewBox="0 0 256 256"><path d="M229.66 77.66l-128 128a8 8 0 0 1-11.32 0l-56-56a8 8 0 0 1 11.32-11.32L96 188.69 218.34 66.34a8 8 0 0 1 11.32 11.32Z"/></symbol>
@@ -92,7 +93,12 @@
     <a href="#avis">Avis</a>
     <a href="#faq">FAQ</a>
   </nav>
+  <a class="btn btn--solid menu__cta" href="#packs">Choisir mon pack</a>
   <a class="menu__login" href="https://www.hecpro.ch/account/sessions/new">Se connecter</a>
+  <div class="palette palette--menu" role="group" aria-label="Palette de couleurs">
+    <button type="button" data-palette-set="a" aria-pressed="true">Cahier</button>
+    <button type="button" data-palette-set="b" aria-pressed="false">Tableau</button>
+  </div>
 </dialog>
 
 <main id="contenu">
@@ -242,6 +248,7 @@
           </div>
         </article>
       </div>
+      <p class="swipe-hint" aria-hidden="true">Fais glisser pour voir les 7 matières <svg aria-hidden="true"><use href="#i-arrow"/></svg></p>
       <p class="subjects__note reveal">Chaque matière&nbsp;: un guide pour comprendre son fonctionnement et ses attentes, puis des fiches qui reprennent les cours au fil du semestre.</p>
     </div>
   </section>
@@ -264,16 +271,19 @@
         <div class="band" style="--from:0;--to:.7">
           <h3>Comprendre plus vite</h3>
           <p>Tu sors du cours, tu ouvres HECPro et tu remets rapidement les choses au clair.</p>
+          <span class="band__when">Semaines 1 à 14</span>
           <span class="pack-tag">Découverte</span>
         </div>
         <div class="band" style="--from:0;--to:1">
           <h3>Gagner un temps précieux</h3>
           <p>Plus besoin de chercher, trier et reconstruire tes propres supports. L’essentiel est déjà structuré pour toi.</p>
+          <span class="band__when">Tout le semestre</span>
           <span class="pack-tag">Découverte et Elite</span>
         </div>
         <div class="band" style="--from:.55;--to:1">
           <h3>Arriver prêt aux examens</h3>
           <p>Résumés, QCM, exercices, anciens examens et corrections vidéo&nbsp;: tu ne repars pas de zéro.</p>
+          <span class="band__when">De la semaine 9 à la session</span>
           <span class="pack-tag pack-tag--elite">Elite</span>
         </div>
       </div>
@@ -414,6 +424,11 @@
     </div>
   </div>
 </footer>
+
+<div class="palette palette--float" role="group" aria-label="Palette de couleurs">
+  <button type="button" data-palette-set="a" aria-pressed="true">Cahier</button>
+  <button type="button" data-palette-set="b" aria-pressed="false">Tableau</button>
+</div>
 
 <div class="dock" data-dock aria-hidden="true">
   <p>Dès <b>89 CHF</b></p>

@@ -3,7 +3,7 @@
 import { chromium } from '/Users/adroguetimoteo/.npm/_npx/9833c18b2d85bc59/node_modules/playwright/index.mjs';
 import fs from 'fs';
 const [out, w = 1440, h = 900, scheme = 'light', reduced = '0'] = process.argv.slice(2);
-const url = process.env.URL || 'file:///Users/adroguetimoteo/Documents/PROJECTS/hecpro-redesign/index.html';
+const url = process.env.URL || 'file:///Users/adroguetimoteo/Documents/PROJECTS/hecpro-redesign/index.html' + (process.env.Q || '');
 fs.mkdirSync(out, { recursive: true });
 const b = await chromium.launch({ channel: 'chrome' });
 const ctx = await b.newContext({ viewport: { width: +w, height: +h }, colorScheme: scheme, reducedMotion: reduced === '1' ? 'reduce' : 'no-preference', isMobile: +w < 768, hasTouch: +w < 768 });
