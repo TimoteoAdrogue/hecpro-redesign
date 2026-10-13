@@ -18,7 +18,7 @@ const stepPx = +h * 0.85;
 let i = 0;
 for (let y = 0; y < total + stepPx; y += stepPx) {
   await p.evaluate(y => window.scrollTo(0, y), y);
-  await p.waitForTimeout(900);
+  await p.waitForTimeout(+(process.env.STEP_WAIT || 900));
   await p.screenshot({ path: `${out}/${String(i++).padStart(2, '0')}.png` });
   const now = await p.evaluate(() => scrollY + innerHeight >= document.documentElement.scrollHeight - 2);
   if (now) break;
