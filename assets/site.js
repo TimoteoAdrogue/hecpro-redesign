@@ -68,19 +68,37 @@
 
   // [data-annot]: a pen box or red circle drawn around the element when it comes into view.
   $$('[data-annot]').forEach((el, i) => {
-    const svg = document.createElementNS(NS, 'svg'), pad = +(el.dataset.pad || 10);
+    const svg = document.createElementNS(NS, 'svg'), base = +(el.dataset.pad || 10);
     svg.setAttribute('class', 'annot annot--' + (el.dataset.c || 'pen'));
     svg.setAttribute('aria-hidden', 'true');
     const p = pathIn(svg, '');
     const draw = () => {
-      const w = el.offsetWidth + pad * 2, h = el.offsetHeight + pad * 2;
+      const pad = innerWidth < 768 ? Math.round(base * .55) : base; // tighter on phones so it stays off the next words
+      const py = el.dataset.annot === 'circle' ? Math.round(pad * .35) : pad; // a circle stays within its own line
+      const w = el.offsetWidth + pad * 2, h = el.offsetHeight + py * 2;
       svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-      Object.assign(svg.style, { left: -pad + 'px', top: -pad + 'px', width: w + 'px', height: h + 'px' });
+      Object.assign(svg.style, { left: -pad + 'px', top: -py + 'px', width: w + 'px', height: h + 'px' });
       p.setAttribute('d', el.dataset.annot === 'circle' ? roughEllipse(w / 2, h / 2, w / 2 - 2, h / 2 - 4, 11 + i) : roughRect(3, 3, w - 6, h - 6, 5 + i));
     };
     el.appendChild(svg);
     new ResizeObserver(draw).observe(el);
   });
+
+  // 100-student grid next to the 68 %: crossed out in red pen, the rest in teal (seeded order).
+  const matrix = $('[data-matrix]');
+  if (matrix) {
+    const n = +matrix.dataset.n, fail = +matrix.dataset.fail, r = rng(68), order = [...Array(n).keys()];
+    for (let i = n - 1; i > 0; i--) { const k = Math.floor(r() * (i + 1)); [order[i], order[k]] = [order[k], order[i]]; }
+    const failed = new Set(order.slice(0, fail)), grid = $('.matrix__grid', matrix);
+    for (let i = 0; i < n; i++) {
+      const m = document.createElement('i');
+      m.className = 'm ' + (failed.has(i) ? 'm--x' : 'm--o');
+      m.style.setProperty('--d', (calm ? 0 : order.indexOf(i) * .013 + .3).toFixed(3) + 's');
+      grid.appendChild(m);
+    }
+    $('.matrix__x', matrix).className = 'm m--x';
+    $('.matrix__o', matrix).className = 'm m--o';
+  }
 
   // Header turns solid once the hero copy scrolls under it; mobile dock shows between hero and packs.
   const top = $('[data-top]'), dock = $('[data-dock]');
@@ -130,10 +148,10 @@
     if (el.hasAttribute('data-annot') && !el.hasAttribute('data-manual')) el.classList.add('is-drawn');
     if (el.classList.contains('packs__grid')) el.classList.add('is-seen');
     if (!calm && el.dataset.count) count(el);
-    if (typeCode && el.classList.contains('tile--info')) typeCode();
+    if (typeCode && el.querySelector?.('[data-type]')) typeCode();
     io.unobserve(el);
   }), { threshold: .2, rootMargin: '0px 0px -8% 0px' });
-  $$('.reveal, .hl, .band, [data-axis], [data-annot]:not([data-manual]), [data-count], .packs__grid').forEach(el => io.observe(el));
+  $$('.reveal, .hl, .band, [data-axis], [data-annot]:not([data-manual]), [data-count], .packs__grid, [data-matrix]').forEach(el => io.observe(el));
 
   // "Tu es ici": week of the semester, only while the semester runs.
   const axis = $('[data-axis]');
@@ -196,6 +214,9 @@
     const desk = $('.hero__desk'), qx = G.quickTo(desk, 'x', { duration: .9, ease: 'power3' }), qy = G.quickTo(desk, 'y', { duration: .9, ease: 'power3' });
     $('.hero').addEventListener('pointermove', e => { qx((e.clientX / innerWidth - .5) * -22); qy((e.clientY / innerHeight - .5) * -14); });
   }
+
+  // Closing: the sheets from the hero drift back in as a bookend.
+  [['.closing__sheet--l img', -60], ['.closing__sheet--r img', 70]].forEach(([sel, y]) => G.fromTo(sel, { y: -y }, { y, ease: 'none', scrollTrigger: { trigger: '.closing', start: 'top bottom', end: 'bottom top', scrub: .6 } }));
 
   // Semester axis fills with the scroll; the "Tu es ici" flag pops when the line reaches it.
   if (axis) {
