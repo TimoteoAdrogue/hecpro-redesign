@@ -22,7 +22,7 @@
 <link rel="preload" as="font" type="font/woff" href="assets/fonts/cmunrm.woff" crossorigin>
 <link rel="preload" as="image" href="assets/fiche/p1.webp" fetchpriority="high">
 <link rel="stylesheet" href="assets/site.css">
-<script>(function(d){d.classList.add('js');try{if(new URLSearchParams(location.search).get('palette')==='b')d.dataset.palette='b'}catch(e){}})(document.documentElement)</script>
+<script>document.documentElement.classList.add('js')</script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
 {"@type":"Organization","name":"HEC Pro","url":"https://www.hecpro.ch/"},
@@ -41,7 +41,6 @@
 </head>
 <body>
 <svg class="sprite" aria-hidden="true">
-  <filter id="chalk" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4"/></filter>
   <!-- Phosphor Icons (regular), copied from @phosphor-icons/core 2.1.1 -->
   <symbol id="i-arrow" viewBox="0 0 256 256"><path d="M221.66 133.66l-72 72a8 8 0 0 1-11.32-11.32L196.69 136H40a8 8 0 0 1 0-16h156.69l-58.35-58.34a8 8 0 0 1 11.32-11.32l72 72a8 8 0 0 1 0 11.32Z"/></symbol>
   <symbol id="i-check" viewBox="0 0 256 256"><path d="M229.66 77.66l-128 128a8 8 0 0 1-11.32 0l-56-56a8 8 0 0 1 11.32-11.32L96 188.69 218.34 66.34a8 8 0 0 1 11.32 11.32Z"/></symbol>
@@ -70,10 +69,6 @@
       <a href="#faq">FAQ</a>
     </nav>
     <div class="top__end">
-      <div class="swatch" role="group" aria-label="Palette de couleurs">
-        <button type="button" data-palette-set="a" aria-pressed="true" aria-label="Palette Cahier" title="Cahier"></button>
-        <button type="button" data-palette-set="b" aria-pressed="false" aria-label="Palette Tableau" title="Tableau"></button>
-      </div>
       <a class="top__login" href="https://www.hecpro.ch/account/sessions/new">Se connecter</a>
       <a class="btn btn--solid btn--sm" href="#packs">Choisir mon pack</a>
       <button class="top__menu" type="button" aria-label="Ouvrir le menu" data-open-menu>
@@ -98,10 +93,6 @@
   </nav>
   <a class="btn btn--solid menu__cta" href="#packs">Choisir mon pack</a>
   <a class="menu__login" href="https://www.hecpro.ch/account/sessions/new">Se connecter</a>
-  <div class="palette palette--menu" role="group" aria-label="Palette de couleurs">
-    <button type="button" data-palette-set="a" aria-pressed="true">Cahier</button>
-    <button type="button" data-palette-set="b" aria-pressed="false">Tableau</button>
-  </div>
 </dialog>
 
 <main id="contenu">

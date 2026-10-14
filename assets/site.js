@@ -17,20 +17,6 @@
   }
   const scrollToY = y => lenis ? lenis.scrollTo(y, { duration: 1.3 }) : scrollTo({ top: y, behavior: calm ? 'auto' : 'smooth' });
 
-  // Palette switch (comparison aid): A « Cahier » / B « Tableau ».
-  const root = document.documentElement, metas = $$('meta[name="theme-color"]'), metaA = metas.map(m => m.content);
-  const setPalette = (v, animate) => {
-    if (animate) { root.classList.add('is-switching'); setTimeout(() => root.classList.remove('is-switching'), 600); }
-    v === 'b' ? root.dataset.palette = 'b' : delete root.dataset.palette;
-    $$('[data-palette-set]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.paletteSet === v)));
-    metas.forEach((m, i) => { m.content = v === 'b' ? '#151B19' : metaA[i]; });
-    const u = new URL(location.href);
-    v === 'b' ? u.searchParams.set('palette', 'b') : u.searchParams.delete('palette');
-    history.replaceState(null, '', u);
-  };
-  setPalette(root.dataset.palette === 'b' ? 'b' : 'a');
-  $$('[data-palette-set]').forEach(b => b.addEventListener('click', () => setPalette(b.dataset.paletteSet, !calm)));
-
   // Hand-drawn shapes: seeded jitter so a frame looks the same on every visit.
   const rng = a => () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
   const f = n => n.toFixed(1);
