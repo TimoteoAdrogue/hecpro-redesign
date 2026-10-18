@@ -20,8 +20,8 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="preload" as="font" type="font/woff" href="assets/fonts/cmunbx.woff" crossorigin>
 <link rel="preload" as="font" type="font/woff" href="assets/fonts/cmunrm.woff" crossorigin>
+<link rel="preload" as="font" type="font/woff" href="assets/fonts/cmunorm.woff" crossorigin>
 <link rel="preload" as="image" href="assets/fiche/p1.webp" fetchpriority="high">
 <link rel="stylesheet" href="assets/site.css">
 <script>document.documentElement.classList.add('js')</script>
@@ -66,7 +66,6 @@
       <a href="#matieres">Matières</a>
       <a href="#packs">Packs</a>
       <a href="#coaching">Coaching</a>
-      <a href="#avis">Avis</a>
       <a href="#faq">FAQ</a>
     </nav>
     <div class="top__end">
@@ -89,7 +88,6 @@
     <a href="#matieres">Matières</a>
     <a href="#packs">Packs</a>
     <a href="#coaching">Coaching</a>
-    <a href="#avis">Avis</a>
     <a href="#faq">FAQ</a>
   </nav>
   <a class="btn btn--solid menu__cta" href="#packs">Choisir mon pack</a>
@@ -98,12 +96,18 @@
 
 <main id="contenu">
 
-  <!-- 1. Hero -->
+  <!-- Title page -->
   <section class="hero" id="top">
     <div class="wrap hero__grid">
       <div class="hero__copy">
         <h1 class="display">La 1<sup>re</sup> année HEC ne se révise pas <mark class="hl">au hasard</mark>.</h1>
         <p class="lede">HECPro transforme les 7&nbsp;matières du premier semestre en un parcours clair&nbsp;: tu comprends plus vite, tu sais quoi maîtriser.</p>
+        <dl class="byline">
+          <div><dt>Pour</dt><dd>la 1<sup>re</sup> année à HEC Lausanne</dd></div>
+          <div><dt>Contenu</dt><dd>7 matières du 1<sup>er</sup> semestre</dd></div>
+          <div><dt>Déjà</dt><dd>plus de 150 étudiants</dd></div>
+          <div><dt>Garantie</dt><dd>remboursé sous 24&nbsp;h</dd></div>
+        </dl>
         <div class="hero__ctas">
           <a class="btn btn--solid" href="#packs">Choisir mon pack</a>
           <a class="link-arrow" href="#apercu">Voir une fiche <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
@@ -114,44 +118,39 @@
         <div class="paper paper--2"><span class="paper__in"><img src="assets/fiche/p3.webp" width="1083" height="1726" alt="" decoding="async"></span></div>
         <div class="paper paper--1"><span class="paper__in" data-hero-ink><img src="assets/fiche/p1.webp" width="1083" height="1726" alt="" fetchpriority="high"><svg class="ink" viewBox="0 0 1083 1726" preserveAspectRatio="none" data-rect="4,158,1075,214"></svg><span class="paper__note">Ce que l’examen teste<svg viewBox="0 0 46 22" aria-hidden="true"><path d="M2 14C12 4 26 3 40 11" pathLength="1"/><path d="M33 5l8 6-9 4" pathLength="1"/></svg></span></span></div>
       </div>
+        <p class="fig-cap hero__cap"><b>Figure 1.</b> Une vraie fiche HECPro, telle que tu la reçois&nbsp;: Statistiques, séries 1 et 2, pages 1, 3 et 8.</p>
     </div>
     <span class="hero__sentinel hero__sentinel--top" data-hero-top></span>
     <span class="hero__sentinel hero__sentinel--end" data-hero-end></span>
   </section>
 
-  <!-- 2. Facts -->
-  <section class="facts" aria-label="En bref">
-    <dl class="wrap facts__row">
-      <div><dt><span data-count="150">150</span>+</dt><dd>étudiants HEC déjà passés par HECPro</dd></div>
-      <div><dt><span data-count="7">7</span></dt><dd>matières du 1<sup>er</sup> semestre, cours par cours</dd></div>
-      <div><dt><span data-count="24">24</span>&nbsp;h</dt><dd>pour être remboursé si ça ne te convient pas. Accès immédiat.</dd></div>
-    </dl>
-  </section>
-
-  <!-- 3. Le constat (Attention) -->
-  <section class="constat reveal" id="constat">
-    <div class="wrap constat__grid">
-      <div class="callout">
+  <!-- 1 -->
+  <section class="sec constat" id="constat" aria-labelledby="constat-t">
+    <div class="wrap">
+      <div class="prose">
+        <h2 id="constat-t" class="h2"><span class="secnum">1</span>Le constat</h2>
         <p class="label label--red">Attention</p>
         <!-- CONFIRM: source for "68 %" (client claim, unsourced on the live site) -->
-        <p class="statement">Plus de <span class="statement__num" data-annot="circle" data-c="red" data-pad="16"><span data-count="68">68</span>&nbsp;%</span> des étudiants ne passent pas le cap.</p>
-      </div>
-      <figure class="matrix" data-matrix data-n="100" data-fail="68" aria-label="Illustration : sur 100 étudiants, 68 ne passent pas le cap">
-        <div class="matrix__grid"></div>
-        <figcaption><span class="matrix__x"></span>ne passent pas le cap <span class="matrix__o"></span>passent</figcaption>
-      </figure>
-      <div class="constat__cols">
-          <p>Pas forcément parce qu’ils ne travaillent pas, mais parce qu’à HEC, les cours s’enchaînent vite, les notions s’accumulent et il devient facile de perdre du temps sans savoir ce qui compte vraiment.</p>
-          <p><strong>HECPro te donne une direction dès le début.</strong> Tu comprends mieux tes cours pendant le semestre, tu sais ce que tu dois maîtriser et tu arrives aux examens avec une préparation déjà construite.</p>
+        <p class="statement reveal">Plus de <span class="statement__num" data-annot="circle" data-c="red" data-pad="16"><span data-count="68">68</span>&nbsp;%</span> des étudiants ne passent pas le cap.</p>
+        <figure class="margin-fig matrix reveal" data-matrix data-n="100" data-fail="68" aria-label="Illustration : sur 100 étudiants, 68 ne passent pas le cap">
+          <div class="matrix__grid"></div>
+          <figcaption><b>Figure 2.</b> Sur 100 étudiants&nbsp;: <span class="matrix__x"></span>ne passent pas le cap, <span class="matrix__o"></span>passent.</figcaption>
+        </figure>
+        <p>Pas forcément parce qu’ils ne travaillent pas, mais parce qu’à HEC, les cours s’enchaînent vite, les notions s’accumulent et il devient facile de perdre du temps sans savoir ce qui compte vraiment.<sup class="ref">1</sup></p>
+        <aside class="note"><span class="note__n">1</span>«&nbsp;J’avais pas mal de retard en décembre et HECPro m’a permis de voir directement quoi prioriser pour les examens.&nbsp;» <span class="note__who">Léo, 1<sup>re</sup> HEC</span></aside>
+        <p><strong>HECPro te donne une direction dès le début.</strong> Tu comprends mieux tes cours pendant le semestre, tu sais ce que tu dois maîtriser et tu arrives aux examens avec une préparation déjà construite.</p>
       </div>
     </div>
   </section>
 
-  <!-- 4. Aperçu: the real fiche, guided -->
-  <section class="tour" id="apercu" aria-labelledby="apercu-t">
-    <div class="wrap tour__intro reveal">
-      <h2 id="apercu-t" class="h2">Un aperçu concret de ce qui t’attend.</h2>
-      <p class="sub">Découvre une vraie fiche HECPro&nbsp;: claire, structurée et pensée pour aller directement à l’essentiel.</p>
+  <!-- 2 -->
+  <section class="sec tour" id="apercu" aria-labelledby="apercu-t">
+    <div class="wrap tour__intro">
+      <div class="prose">
+        <h2 id="apercu-t" class="h2"><span class="secnum">2</span>Une fiche, de près</h2>
+        <p class="sub">Un aperçu concret de ce qui t’attend&nbsp;: une vraie fiche HECPro, claire, structurée et pensée pour aller directement à l’essentiel.<sup class="ref">2</sup></p>
+        <aside class="note"><span class="note__n">2</span>«&nbsp;Les supports sont clairs et vont droit au but. Pas besoin de passer des heures à chercher quoi réviser, tout est beaucoup plus structuré.&nbsp;» <span class="note__who">Emma, 1<sup>re</sup> HEC</span></aside>
+      </div>
     </div>
     <div class="tour__stage" data-tour>
       <div class="wrap tour__grid">
@@ -205,11 +204,13 @@
     </div>
   </dialog>
 
-  <!-- 5. Matières -->
-  <section class="subjects" id="matieres" aria-labelledby="matieres-t">
+  <!-- 3 -->
+  <section class="sec subjects" id="matieres" aria-labelledby="matieres-t">
     <div class="wrap">
-      <h2 id="matieres-t" class="h2">Table des matières.</h2>
-      <p class="sub reveal">Les 7 matières du premier semestre, chacune avec son guide et ses fiches.</p>
+      <div class="prose">
+        <h2 id="matieres-t" class="h2"><span class="secnum">3</span>Table des matières</h2>
+        <p class="sub">Les 7 matières du premier semestre, chacune avec son guide et ses fiches.</p>
+      </div>
       <!-- CONFIRM: subject list matches the 2026-27 curriculum -->
       <ol class="toc">
         <li class="toc__row reveal"><span class="toc__n">1</span><span class="toc__name">Comptabilité</span><span class="toc__dots" aria-hidden="true"></span><span class="toc__math math">Σ débit = Σ crédit</span></li>
@@ -220,17 +221,21 @@
         <li class="toc__row reveal"><span class="toc__n">6</span><span class="toc__name">Microéconomie</span><span class="toc__dots" aria-hidden="true"></span><span class="toc__math math"><i>ε</i> = <span class="frac"><span>%Δ<i>Q</i></span><span>%Δ<i>P</i></span></span></span></li>
         <li class="toc__row reveal"><span class="toc__n">7</span><span class="toc__name">Statistiques I</span><span class="toc__dots" aria-hidden="true"></span><span class="toc__math math"><i>x̄</i> = <span class="frac"><span>1</span><span><i>n</i></span></span> <span class="big-op">Σ</span> <i>x<sub>i</sub></i></span></li>
       </ol>
-      <div class="subjects__foot reveal">
-        <p class="subjects__note">Chaque matière&nbsp;: un guide pour comprendre son fonctionnement et ses attentes, puis des fiches qui reprennent les cours au fil du semestre.</p>
-        <a class="link-arrow" href="#apercu">Voir un extrait&nbsp;: Statistiques I <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      <div class="prose subjects__foot">
+        <p class="subjects__note">Chaque matière&nbsp;: un guide pour comprendre son fonctionnement et ses attentes, puis des fiches qui reprennent les cours au fil du semestre.<sup class="ref">3</sup> <a class="link-arrow" href="#apercu">Voir un extrait&nbsp;: Statistiques I <svg aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
+        <aside class="note"><span class="note__n">3</span>«&nbsp;[…] Ce n’est pas juste des résumés. Tu as aussi des QCM, des conseils et une vraie méthode pour bosser plus intelligemment.&nbsp;» <span class="note__who">Nathan, 1<sup>re</sup> HEC</span></aside>
       </div>
     </div>
   </section>
 
-  <!-- 6. Le semestre -->
-  <section class="semester" id="methode" aria-labelledby="methode-t">
+  <!-- 4 -->
+  <section class="sec semester" id="methode" aria-labelledby="methode-t">
     <div class="wrap">
-      <h2 id="methode-t" class="h2 reveal">Prends de l’avance dès le premier cours. Garde&#8209;la jusqu’aux examens.</h2>
+      <div class="prose">
+        <h2 id="methode-t" class="h2"><span class="secnum">4</span>Le semestre</h2>
+        <p class="sub">Prends de l’avance dès le premier cours. Garde&#8209;la jusqu’aux examens.<sup class="ref">4</sup></p>
+        <aside class="note"><span class="note__n">4</span>«&nbsp;J’ai pris le pack juste avant les révisions et ça m’a surtout évité de perdre du temps à chercher quoi travailler.&nbsp;» <span class="note__who">Manon, 1<sup>re</sup> HEC</span></aside>
+      </div>
       <!-- CONFIRM: UNIL autumn semester start (2026-09-14 assumed) and January session dates -->
       <div class="axis reveal" data-axis data-start="2026-09-14" data-weeks="14">
         <div class="axis__line"><span class="axis__draw"></span></div>
@@ -264,12 +269,11 @@
     </div>
   </section>
 
-  <!-- 7. Packs (Formule) -->
-  <section class="packs" id="packs" aria-labelledby="packs-t">
+  <!-- 5 -->
+  <section class="sec packs" id="packs" aria-labelledby="packs-t">
     <div class="wrap">
-      <div class="packs__head reveal">
-        <p class="label" data-annot="box" data-c="pen" data-pad="8">Formule</p>
-        <h2 id="packs-t" class="h2">Choisis ta formule.</h2>
+      <div class="prose packs__head">
+        <h2 id="packs-t" class="h2"><span class="secnum">5</span>Les formules</h2>
         <fieldset class="chooser">
           <legend>Je veux surtout</legend>
           <label><input type="radio" name="goal" value="decouverte"><span>comprendre mes cours</span></label>
@@ -278,92 +282,68 @@
         <p class="chooser__note" data-for="decouverte">Pour comprendre tes cours, prendre tes repères et arrêter d’avancer dans le flou, le Pack Découverte est fait pour ça.</p>
         <p class="chooser__note" data-for="elite">Pour disposer de tout le matériel et travailler la matière jusqu’aux examens, le Pack Elite regroupe l’expérience HECPro complète.</p>
       </div>
-      <div class="packs__grid">
-        <article class="pack pack--elite reveal" data-annot="box" data-c="pen" data-pad="12" data-manual>
-          <p class="pack__flag">Le plus choisi</p>
-          <h3 class="pack__name">Pack Elite</h3>
-          <p class="pack__price">250<span class="cur">CHF</span></p>
-          <p class="pack__pitch">La préparation complète pour maîtriser les 7 matières, gagner du temps et arriver aux examens prêt à performer.</p>
-          <p class="pack__incl">Tout le Pack Découverte, plus&nbsp;:</p>
-          <ul class="ticks">
-            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Guides orientés examen</li>
-            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Résumés</li>
-            <li><svg aria-hidden="true"><use href="#i-check"/></svg>QCM</li>
-            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Exercices</li>
-            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Anciens examens</li>
-            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Corrections vidéo par des assistants du cours</li>
-          </ul>
-          <a class="btn btn--solid btn--block" href="https://www.hecpro.ch/pack-elite/buy">Obtenir Elite</a>
-        </article>
-        <article class="pack pack--decouverte reveal" data-annot="box" data-c="pen" data-pad="12" data-manual>
-          <h3 class="pack__name">Pack Découverte</h3>
-          <p class="pack__price">89<span class="cur">CHF</span></p>
-          <p class="pack__pitch">Le point de départ pour comprendre HEC Lausanne, prendre tes repères et ne plus subir tes premiers cours.</p>
-          <ul class="ticks">
-            <li><svg aria-hidden="true"><use href="#i-check"/></svg>7 guides, un par matière</li>
-            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Contexte, fonctionnement et attentes de chaque matière</li>
-            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Fiches d’explication pour chaque cours</li>
-            <li><svg aria-hidden="true"><use href="#i-check"/></svg>Une progression claire, semaine après semaine</li>
-          </ul>
-          <a class="btn btn--line btn--block" href="https://www.hecpro.ch/pack-decouverte/buy">Obtenir Découverte</a>
-        </article>
-      </div>
-      <div class="packs__foot reveal">
-        <p class="packs__terms">Accès immédiat après paiement. Carte ou PayPal, Twint sur demande. Satisfait ou remboursé pendant 24&nbsp;h.</p>
-        <figure class="packs__quote"><blockquote><p>«&nbsp;Au début j’hésitais un peu à prendre HECPro, surtout pour le prix. Mais en vrai, <mark class="hl">ça m’a bien aidé</mark>.&nbsp;»</p></blockquote><figcaption>Fab, redoublant en 1<sup>re</sup> HEC</figcaption></figure>
-      </div>
-    </div>
-  </section>
-
-  <!-- 8. Coaching -->
-  <section class="coaching" id="coaching" aria-labelledby="coaching-t">
-    <div class="wrap coaching__grid">
-      <div class="coaching__main reveal">
-        <h2 id="coaching-t" class="h2">Une heure pour débloquer ce qui te fait perdre des jours.</h2>
-        <p class="sub">Un cours que tu ne comprends pas, un exercice qui bloque ou un examen à préparer&#8239;? Réserve une séance individuelle avec un assistant HECPro.</p>
-      </div>
-      <article class="slip reveal" aria-label="Séance de coaching">
-        <p class="slip__head"><span>Séance individuelle</span><span>60&nbsp;minutes</span></p>
-        <ul class="slip__list">
-          <li><span class="tick"><svg viewBox="0 0 22 22" aria-hidden="true"><path d="M5 11.5l4.5 4.5L18 5.5" pathLength="1"/></svg></span><b>Débloquer un cours</b><span>Reprendre une notion jusqu’à ce qu’elle devienne logique.</span></li>
-          <li><span class="tick"><svg viewBox="0 0 22 22" aria-hidden="true"><path d="M5 11.5l4.5 4.5L18 5.5" pathLength="1"/></svg></span><b>Comprendre un exercice</b><span>Voir le raisonnement, pas seulement la réponse.</span></li>
-          <li><span class="tick"><svg viewBox="0 0 22 22" aria-hidden="true"><path d="M5 11.5l4.5 4.5L18 5.5" pathLength="1"/></svg></span><b>Préparer un examen</b><span>Cibler ce qui peut vraiment te faire gagner des points.</span></li>
-          <li><span class="tick"><svg viewBox="0 0 22 22" aria-hidden="true"><path d="M5 11.5l4.5 4.5L18 5.5" pathLength="1"/></svg></span><b>Gagner du temps</b><span>Une heure ciblée plutôt que plusieurs heures à tourner en rond.</span></li>
-        </ul>
-        <div class="slip__foot">
-          <p class="coaching__price">45<span class="cur">CHF</span></p>
-          <a class="btn btn--solid" href="https://wa.link/ardcc6"><svg aria-hidden="true"><use href="#i-whatsapp"/></svg> Réserver une séance</a>
+      <div class="packs__grid cmp reveal" role="table" aria-label="Comparaison des deux packs">
+        <div class="pack pack--decouverte" data-annot="box" data-c="pen" data-pad="6" data-manual aria-hidden="true"></div>
+        <div class="pack pack--elite" data-annot="box" data-c="pen" data-pad="6" data-manual aria-hidden="true"></div>
+        <div class="cmp__r cmp__head" role="row">
+          <span class="cmp__l" role="columnheader"><span class="sr-only">Contenu</span></span>
+          <span class="cmp__c" role="columnheader"><span class="cmp__name">Découverte</span><span class="cmp__price">89<span class="cur">CHF</span></span><span class="cmp__pitch">Le point de départ pour comprendre HEC Lausanne, prendre tes repères et ne plus subir tes premiers cours.</span></span>
+          <span class="cmp__c" role="columnheader"><span class="pen-note">le plus choisi<svg viewBox="0 0 46 22" aria-hidden="true"><path d="M2 8C14 2 30 4 40 13" pathLength="1"/><path d="M31 14l10 0-3-9" pathLength="1"/></svg></span><span class="cmp__name">Elite</span><span class="cmp__price">250<span class="cur">CHF</span></span><span class="cmp__pitch">La préparation complète pour maîtriser les 7 matières, gagner du temps et arriver aux examens prêt à performer.</span></span>
         </div>
-        <p class="slip__note">Réservation par WhatsApp, avec un assistant HECPro.</p>
-      </article>
-    </div>
-  </section>
-
-  <!-- 9. Avis -->
-  <section class="avis" id="avis" aria-labelledby="avis-t">
-    <div class="wrap">
-      <h2 id="avis-t" class="h2 reveal">L’expérience HECPro, racontée par les étudiants.</h2>
-      <figure class="avis__feat reveal">
-        <blockquote><p>«&nbsp;J’ai beaucoup aimé travailler avec HECPro, ça m’a fait gagner <mark class="hl">énormément de temps</mark>. Les résumés étaient précis et reprenaient bien l’ensemble du cours.&nbsp;»</p></blockquote>
-        <figcaption>Christopher, étudiant en 1<sup>re</sup> HEC</figcaption>
-      </figure>
-    </div>
-    <div class="avis__row" tabindex="0" aria-label="Autres avis, défilement horizontal">
-      <figure class="quote"><blockquote><p>«&nbsp;J’avais pas mal de retard en décembre et HECPro m’a permis de voir directement <mark class="hl">quoi prioriser</mark> pour les examens.&nbsp;»</p></blockquote><figcaption>Léo, étudiant en 1<sup>re</sup> HEC</figcaption></figure>
-      <figure class="quote"><blockquote><p>«&nbsp;Les supports sont clairs et vont <mark class="hl">droit au but</mark>. Pas besoin de passer des heures à chercher quoi réviser, tout est beaucoup plus structuré.&nbsp;»</p></blockquote><figcaption>Emma, étudiante en 1<sup>re</sup> HEC</figcaption></figure>
-      <figure class="quote"><blockquote><p>«&nbsp;[…] Ce n’est pas juste des résumés. Tu as aussi des QCM, des conseils et <mark class="hl">une vraie méthode</mark> pour bosser plus intelligemment.&nbsp;»</p></blockquote><figcaption>Nathan, étudiant en 1<sup>re</sup> HEC</figcaption></figure>
-      <figure class="quote"><blockquote><p>«&nbsp;J’ai pris le pack juste avant les révisions et ça m’a surtout évité de <mark class="hl">perdre du temps</mark> à chercher quoi travailler.&nbsp;»</p></blockquote><figcaption>Manon, étudiante en 1<sup>re</sup> HEC</figcaption></figure>
-    </div>
-  </section>
-
-  <!-- 10. FAQ -->
-  <section class="faq" id="faq" aria-labelledby="faq-t">
-    <div class="wrap faq__grid">
-      <div class="faq__title">
-        <h2 id="faq-t" class="h2">Questions fréquentes</h2>
-        <p class="faq__more">Une autre question&#8239;? <a class="link-arrow" href="https://wa.link/ardcc6">Écris-nous sur WhatsApp <svg aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
+          <div class="cmp__r" role="row" style="--i:1"><span class="cmp__l" role="rowheader">7 guides, un par matière</span><span class="cmp__c" role="cell"><svg class="pentick" viewBox="0 0 22 22" aria-hidden="true"><path d="M5 11.5l4.5 4.5L18 5.5" pathLength="1"/></svg><span class="sr-only">inclus</span></span><span class="cmp__c" role="cell"><svg class="pentick" viewBox="0 0 22 22" aria-hidden="true"><path d="M5 11.5l4.5 4.5L18 5.5" pathLength="1"/></svg><span class="sr-only">inclus</span></span></div>
+          <div class="cmp__r" role="row" style="--i:2"><span class="cmp__l" role="rowheader">Contexte, fonctionnement et attentes de chaque matière</span><span class="cmp__c" role="cell"><svg class="pentick" viewBox="0 0 22 22" aria-hidden="true"><path d="M5 11.5l4.5 4.5L18 5.5" pathLength="1"/></svg><span class="sr-only">inclus</span></span><span class="cmp__c" role="cell"><svg class="pentick" viewBox="0 0 22 22" aria-hidden="true"><path d="M5 11.5l4.5 4.5L18 5.5" pathLength="1"/></svg><span class="sr-only">inclus</span></span></div>
+          <div class="cmp__r" role="row" style="--i:3"><span class="cmp__l" role="rowheader">Fiches d’explication pour chaque cours</span><span class="cmp__c" role="cell"><svg class="pentick" viewBox="0 0 22 22" aria-hidden="true"><path d="M5 11.5l4.5 4.5L18 5.5" pathLength="1"/></svg><span class="sr-only">inclus</span></span><span class="cmp__c" role="cell"><svg class="pentick" viewBox="0 0 22 22" aria-hidden="true"><path d="M5 11.5l4.5 4.5L18 5.5" pathLength="1"/></svg><span class="sr-only">inclus</span></span></div>
+          <div class="cmp__r" role="row" style="--i:4"><span class="cmp__l" role="rowheader">Une progression claire, semaine après semaine</span><span class="cmp__c" role="cell"><svg class="pentick" viewBox="0 0 22 22" aria-hidden="true"><path d="M5 11.5l4.5 4.5L18 5.5" pathLength="1"/></svg><span class="sr-only">inclus</span></span><span class="cmp__c" role="cell"><svg class="pentick" viewBox="0 0 22 22" aria-hidden="true"><path d="M5 11.5l4.5 4.5L18 5.5" pathLength="1"/></svg><span class="sr-only">inclus</span></span></div>
+          <div class="cmp__r" role="row" style="--i:5"><span class="cmp__l" role="rowheader">Guides orientés examen</span><span class="cmp__c" role="cell"><span class="sr-only">non inclus</span></span><span class="cmp__c" role="cell"><svg class="pentick" viewBox="0 0 22 22" aria-hidden="true"><path d="M5 11.5l4.5 4.5L18 5.5" pathLength="1"/></svg><span class="sr-only">inclus</span></span></div>
+          <div class="cmp__r" role="row" style="--i:6"><span class="cmp__l" role="rowheader">Résumés</span><span class="cmp__c" role="cell"><span class="sr-only">non inclus</span></span><span class="cmp__c" role="cell"><svg class="pentick" viewBox="0 0 22 22" aria-hidden="true"><path d="M5 11.5l4.5 4.5L18 5.5" pathLength="1"/></svg><span class="sr-only">inclus</span></span></div>
+          <div class="cmp__r" role="row" style="--i:7"><span class="cmp__l" role="rowheader">QCM</span><span class="cmp__c" role="cell"><span class="sr-only">non inclus</span></span><span class="cmp__c" role="cell"><svg class="pentick" viewBox="0 0 22 22" aria-hidden="true"><path d="M5 11.5l4.5 4.5L18 5.5" pathLength="1"/></svg><span class="sr-only">inclus</span></span></div>
+          <div class="cmp__r" role="row" style="--i:8"><span class="cmp__l" role="rowheader">Exercices</span><span class="cmp__c" role="cell"><span class="sr-only">non inclus</span></span><span class="cmp__c" role="cell"><svg class="pentick" viewBox="0 0 22 22" aria-hidden="true"><path d="M5 11.5l4.5 4.5L18 5.5" pathLength="1"/></svg><span class="sr-only">inclus</span></span></div>
+          <div class="cmp__r" role="row" style="--i:9"><span class="cmp__l" role="rowheader">Anciens examens</span><span class="cmp__c" role="cell"><span class="sr-only">non inclus</span></span><span class="cmp__c" role="cell"><svg class="pentick" viewBox="0 0 22 22" aria-hidden="true"><path d="M5 11.5l4.5 4.5L18 5.5" pathLength="1"/></svg><span class="sr-only">inclus</span></span></div>
+          <div class="cmp__r" role="row" style="--i:10"><span class="cmp__l" role="rowheader">Corrections vidéo par des assistants du cours</span><span class="cmp__c" role="cell"><span class="sr-only">non inclus</span></span><span class="cmp__c" role="cell"><svg class="pentick" viewBox="0 0 22 22" aria-hidden="true"><path d="M5 11.5l4.5 4.5L18 5.5" pathLength="1"/></svg><span class="sr-only">inclus</span></span></div>
+        <div class="cmp__r cmp__buy" role="row">
+          <span class="cmp__l" role="cell"><span class="sr-only">Commander</span></span>
+          <span class="cmp__c" role="cell"><a class="btn btn--line btn--block" href="https://www.hecpro.ch/pack-decouverte/buy">Obtenir Découverte</a></span>
+          <span class="cmp__c" role="cell"><a class="btn btn--solid btn--block" href="https://www.hecpro.ch/pack-elite/buy">Obtenir Elite</a></span>
+        </div>
       </div>
-      <div class="faq__list">
+      <div class="prose packs__foot">
+        <p class="packs__terms">Accès immédiat après paiement. Carte ou PayPal, Twint sur demande. Satisfait ou remboursé pendant 24&nbsp;h.<sup class="ref">5</sup></p>
+        <aside class="note"><span class="note__n">5</span>«&nbsp;Au début j’hésitais un peu à prendre HECPro, surtout pour le prix. Mais en vrai, ça m’a bien aidé.&nbsp;» <span class="note__who">Fab, redoublant, 1<sup>re</sup> HEC</span></aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="sec coaching" id="coaching" aria-labelledby="coaching-t">
+    <div class="wrap">
+      <div class="prose">
+        <h2 id="coaching-t" class="h2"><span class="secnum">6</span>Coaching privé</h2>
+        <p class="sub">Une heure pour débloquer ce qui te fait perdre des jours. Un cours que tu ne comprends pas, un exercice qui bloque ou un examen à préparer&#8239;? Réserve une séance individuelle avec un assistant HECPro.</p>
+        <aside class="note note--plain">Réservation par WhatsApp, avec un assistant HECPro.</aside>
+        <article class="slip reveal" aria-label="Séance de coaching">
+          <p class="slip__head"><span>Séance individuelle</span><span>60&nbsp;minutes</span></p>
+          <ul class="slip__list">
+            <li><span class="tick"><svg viewBox="0 0 22 22" aria-hidden="true"><path d="M5 11.5l4.5 4.5L18 5.5" pathLength="1"/></svg></span><b>Débloquer un cours</b><span>Reprendre une notion jusqu’à ce qu’elle devienne logique.</span></li>
+            <li><span class="tick"><svg viewBox="0 0 22 22" aria-hidden="true"><path d="M5 11.5l4.5 4.5L18 5.5" pathLength="1"/></svg></span><b>Comprendre un exercice</b><span>Voir le raisonnement, pas seulement la réponse.</span></li>
+            <li><span class="tick"><svg viewBox="0 0 22 22" aria-hidden="true"><path d="M5 11.5l4.5 4.5L18 5.5" pathLength="1"/></svg></span><b>Préparer un examen</b><span>Cibler ce qui peut vraiment te faire gagner des points.</span></li>
+            <li><span class="tick"><svg viewBox="0 0 22 22" aria-hidden="true"><path d="M5 11.5l4.5 4.5L18 5.5" pathLength="1"/></svg></span><b>Gagner du temps</b><span>Une heure ciblée plutôt que plusieurs heures à tourner en rond.</span></li>
+          </ul>
+          <div class="slip__foot">
+            <p class="coaching__price">45<span class="cur">CHF</span></p>
+            <a class="btn btn--solid" href="https://wa.link/ardcc6"><svg aria-hidden="true"><use href="#i-whatsapp"/></svg> Réserver une séance</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section class="sec faq" id="faq" aria-labelledby="faq-t">
+    <div class="wrap">
+      <div class="prose">
+        <h2 id="faq-t" class="h2"><span class="secnum">7</span>Questions fréquentes</h2>
+        <aside class="note note--plain">Une autre question&#8239;? <a class="link-arrow" href="https://wa.link/ardcc6">Écris-nous sur WhatsApp <svg aria-hidden="true"><use href="#i-arrow"/></svg></a></aside>
+        <div class="faq__list">
         <details><summary>Quel pack est fait pour moi&#8239;?<svg aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="faq__a"><p>Si tu viens de commencer HEC et que tu veux surtout comprendre tes cours, prendre tes repères et arrêter d’avancer dans le flou, le Pack Découverte est fait pour ça.</p><p>Si tu veux aller plus loin et disposer de tout le matériel pour travailler la matière jusqu’aux examens, le Pack Elite regroupe l’expérience HECPro complète.</p></div></details>
         <details><summary>Qu’est-ce que je reçois concrètement avec le Pack Découverte&#8239;?<svg aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="faq__a"><p>Tu retrouves les 7 matières du premier semestre, chacune avec un guide pour comprendre la matière, son fonctionnement et ses attentes, puis des fiches qui reprennent les cours au fil du semestre. L’idée est simple&nbsp;: tu sors du cours, tu ouvres HECPro et tu remets rapidement les choses au clair.</p></div></details>
         <details><summary>Et qu’est-ce que le Pack Elite apporte en plus&#8239;?<svg aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="faq__a"><p>Le Pack Elite contient tout le Pack Découverte, puis ajoute les ressources pensées pour aller chercher les résultats&nbsp;: résumés, QCM, exercices, anciens examens, corrections vidéo d’examens par des assistants et guides ciblés examen. Tu ne repars pas de zéro au moment des révisions&nbsp;: ton semestre est déjà construit.</p></div></details>
@@ -374,20 +354,24 @@
         <details><summary>Est-ce que tout est vraiment adapté à HEC Lausanne&#8239;?<svg aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="faq__a"><p>Oui. HECPro est construit spécifiquement autour des 7 matières du premier semestre de première année à HEC Lausanne. Ce n’est pas une plateforme généraliste&nbsp;: les supports suivent les matières, les contenus et les exigences auxquelles tu es réellement confronté pendant ton année.</p></div></details>
         <details><summary>Quand est-ce que j’ai accès au contenu&#8239;?<svg aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="faq__a"><p>Dès ton achat, tu accèdes à ton espace HECPro et aux ressources comprises dans ton pack. Pas d’attente&nbsp;: tu peux commencer à utiliser le matériel immédiatement.</p></div></details>
         <details><summary>Et si HECPro ne me correspond pas&#8239;?<svg aria-hidden="true"><use href="#i-plus"/></svg></summary><div class="faq__a"><p>Tu as 24&nbsp;heures pour découvrir HECPro. Si le contenu ne te convient pas, tu peux demander ton remboursement selon les conditions prévues.</p></div></details>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- 11. Closing -->
+  <!-- End -->
   <section class="closing reveal">
     <div class="closing__sheets" aria-hidden="true">
       <span class="closing__sheet closing__sheet--l"><img src="assets/fiche/p5.webp" width="1083" height="1726" alt="" loading="lazy"></span>
       <span class="closing__sheet closing__sheet--r"><img src="assets/fiche/p8.webp" width="1083" height="1726" alt="" loading="lazy"></span>
     </div>
     <div class="wrap closing__in">
-      <h2 class="display display--sm">Commence HEC avec une <mark class="hl">longueur d’avance</mark>.</h2>
-      <p class="sub">7 matières, un cadre clair dès les premières semaines pour comprendre tes cours, savoir où tu vas et ne pas laisser le flou s’installer.</p>
-      <a class="btn btn--solid" href="#packs">Choisir mon pack</a>
+      <div class="prose">
+        <h2 class="display display--sm">Commence HEC avec une longueur d’avance.<sup class="ref">6</sup></h2>
+        <aside class="note"><span class="note__n">6</span>«&nbsp;J’ai beaucoup aimé travailler avec HECPro, ça m’a fait gagner énormément de temps. Les résumés étaient précis et reprenaient bien l’ensemble du cours.&nbsp;» <span class="note__who">Christopher, 1<sup>re</sup> HEC</span></aside>
+        <p class="sub">7 matières, un cadre clair dès les premières semaines pour comprendre tes cours, savoir où tu vas et ne pas laisser le flou s’installer.</p>
+        <a class="btn btn--solid" href="#packs">Choisir mon pack</a>
+      </div>
     </div>
   </section>
 </main>
@@ -400,10 +384,10 @@
     <nav class="foot__nav" aria-label="Pied de page">
       <a href="#packs">Packs</a>
       <a href="#coaching">Coaching</a>
-      <a href="#avis">Avis</a>
       <a href="#faq">FAQ</a>
       <a href="https://www.hecpro.ch/account/sessions/new">Se connecter</a>
     </nav>
+    <p class="colophon">Composé en Computer Modern, le caractère de Donald Knuth dans lequel sont écrites les fiches HECPro.</p>
     <div class="foot__legal">
       <!-- CONFIRM: are Red Bull, Payot and Tony Mate official partners? Need logo files -->
       <p>Partenaires&nbsp;: Red Bull, Payot, Tony Mate</p>
