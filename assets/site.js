@@ -42,10 +42,12 @@
 
   // Colour fields: the page takes the colour of the section crossing the middle of the screen.
   const root = document.documentElement, theme = $('meta[name="theme-color"]');
+  // fixed table: reading the computed colour here would force a full style recalc on every switch
+  const fieldHex = { teal: '#14BDB6', coral: '#FF6A4D', chalk: matchMedia('(prefers-color-scheme: dark)').matches ? '#141A24' : '#F3F4F1', night: '#0B0F17', lemon: '#FFE15B', lilac: '#C9B8FF' };
   const fieldIO = new IntersectionObserver(es => es.forEach(e => {
-    if (!e.isIntersecting) return;
+    if (!e.isIntersecting || root.dataset.field === e.target.dataset.field) return;
     root.dataset.field = e.target.dataset.field;
-    requestAnimationFrame(() => { theme.content = getComputedStyle(root).getPropertyValue('--bg').trim() || theme.content; });
+    theme.content = fieldHex[root.dataset.field] || theme.content;
   }), { rootMargin: '-50% 0px -50% 0px' });
   $$('main [data-field]').forEach(s => fieldIO.observe(s)); // the footer carries its own night background
 
@@ -108,20 +110,28 @@
 
   // The 68 % and its grid, driven by one progress value (scroll on desktop and phone, static when calm).
   const statN = $('[data-stat-n]');
+  // Only touch the cells and the number that actually change (scroll handlers run every frame).
+  const crossedUpTo = []; // crossedUpTo[i] = crosses among the first i + 1 cells
+  cells.reduce((n, c, i) => (crossedUpTo[i] = n + (c.classList.contains('m--x') ? 1 : 0)), 0);
+  let statOn = -1;
   const setStat = p => {
     const on = Math.round(p * cells.length);
-    let crossed = 0;
-    cells.forEach((c, i) => { const v = i < on; c.classList.toggle('on', v); if (v && c.classList.contains('m--x')) crossed++; });
-    if (statN) statN.textContent = crossed;
+    if (on === statOn) return;
+    const [a, b] = statOn < 0 ? [0, cells.length] : [Math.min(on, statOn), Math.max(on, statOn)];
+    for (let i = a; i < b; i++) cells[i].classList.toggle('on', i < on);
+    statOn = on;
+    if (statN) statN.textContent = on ? crossedUpTo[on - 1] : 0;
   };
 
   // The semester, driven by one progress value: the line, the big week, the lit band, the flag.
   const weekBig = $('[data-weekbig]');
-  const bands = $$('.band');
+  const bands = $$('.band').map(b => { const s = getComputedStyle(b); return [b, parseFloat(s.getPropertyValue('--from')), parseFloat(s.getPropertyValue('--to'))]; });
+  let weekTxt = '';
   const setSemester = (p, you) => {
     const wk = Math.min(14, Math.floor(p / .7 * 14) + 1);
-    if (weekBig) weekBig.textContent = p < .7 ? `Semaine ${wk}` : p < .9 ? 'Révisions' : 'Session';
-    bands.forEach(b => { const s = getComputedStyle(b); b.classList.toggle('is-lit', p >= parseFloat(s.getPropertyValue('--from')) - .001 && p <= parseFloat(s.getPropertyValue('--to')) + .001); });
+    const txt = p < .7 ? `Semaine ${wk}` : p < .9 ? 'Révisions' : 'Session';
+    if (weekBig && txt !== weekTxt) weekBig.textContent = weekTxt = txt;
+    bands.forEach(([b, from, to]) => b.classList.toggle('is-lit', p >= from - .001 && p <= to + .001));
     if (you) you.classList.toggle('is-on', youAt >= 0 && p >= youAt);
   };
 
@@ -141,6 +151,15 @@
     }
   }
 
+  // Hero sheets enter only once their picture is decoded: no white card falling, no pop-in.
+  $$('.hero .paper').forEach(pp => {
+    const img = $('img', pp), ready = () => pp.classList.add('is-ready');
+    (img.decode ? img.decode() : Promise.resolve()).then(ready, ready);
+  });
+  setTimeout(() => $$('.hero .paper').forEach(pp => pp.classList.add('is-ready')), 2500);
+  // The reader's other pages are fetched quietly once the page is idle.
+  addEventListener('load', () => (window.requestIdleCallback || setTimeout)(() => $$('.reader img').forEach(i => { i.loading = 'eager'; }), { timeout: 4000 }), { once: true });
+
   // Dialogs: mobile menu and the 8-page reader. Smooth scroll pauses while one is open.
   const wire = (dialog, openSel) => {
     $$(openSel).forEach(b => b.addEventListener('click', () => { dialog.showModal(); lenis?.stop(); }));
@@ -155,9 +174,10 @@
   if (!G || calm) { $('.hero__title').style.opacity = 1; setStat(1); if (weekBig) weekBig.textContent = '14 semaines'; return; }
 
   // Headlines rise line by line (masked): the hero one on load, the others as they enter.
+  // Split after the brand font is in, so lines are measured once and never re-split mid-scroll.
   const h1 = $('.hero__title');
-  G.set(h1, { opacity: 1 });
-  if (window.SplitText) {
+  const fontsIn = Promise.race([document.fonts.load('900 40px "Mona Sans"').then(() => document.fonts.ready), new Promise(r => setTimeout(r, 1800))]);
+  fontsIn.then(() => { G.set(h1, { opacity: 1 }); if (!window.SplitText) return;
     const rise = (el, onScroll) => SplitText.create(el, {
       type: 'lines', mask: 'lines', linesClass: 'ln', autoSplit: true,
       onSplit: s => G.from(s.lines, {
@@ -167,14 +187,19 @@
     });
     rise(h1, false);
     $$('main .poster:not(.hero__title)').forEach(el => rise(el, true));
-  }
+  });
 
-  // Hero sheets: fan apart as the page scrolls, lean toward the pointer on desktop.
-  const fan = { 1: { yPercent: -12, rotation: -2.5 }, 2: { yPercent: 8, xPercent: 14, rotation: 4 }, 3: { yPercent: 18, xPercent: -10, rotation: -5 } };
-  Object.entries(fan).forEach(([n, to]) => G.to(`.paper--${n} .paper__in`, { ...to, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: .6 } }));
+  // Hero sheets: as the hero leaves, they tip back in 3D and slide down across the edge, so their
+  // tips land on the next slide (under its text) before they glide away. Depth differs per sheet.
+  const slide = (phoneish => ({
+    1: { y: () => innerHeight * (phoneish ? .22 : .46), z: 140, rotationX: 48, rotationZ: -13, xPercent: -10 },
+    2: { y: () => innerHeight * (phoneish ? .16 : .36), z: 50, rotationX: 40, rotationZ: 15, xPercent: 22 },
+    3: { y: () => innerHeight * (phoneish ? .1 : .26), z: -70, rotationX: 32, rotationZ: -22, xPercent: -34 },
+  }))(matchMedia('(max-width: 767px)').matches);
+  Object.entries(slide).forEach(([n, to]) => G.to(`.paper--${n} .paper__in`, { ...to, transformPerspective: 1100, ease: 'power1.in', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: .8, invalidateOnRefresh: true } }));
   if (fine) {
-    const desk = $('.hero__desk'), qx = G.quickTo(desk, 'x', { duration: .9, ease: 'power3' }), qy = G.quickTo(desk, 'y', { duration: .9, ease: 'power3' });
-    $('.hero').addEventListener('pointermove', e => { qx((e.clientX / innerWidth - .5) * -22); qy((e.clientY / innerHeight - .5) * -14); });
+    const tilt = $('.desk__tilt'), ry = G.quickTo(tilt, 'rotationY', { duration: 1.1, ease: 'power3' }), rx = G.quickTo(tilt, 'rotationX', { duration: 1.1, ease: 'power3' });
+    $('.hero').addEventListener('pointermove', e => { ry((e.clientX / innerWidth - .5) * 16); rx((e.clientY / innerHeight - .5) * -10); });
   }
 
   const phone = matchMedia('(max-width: 767px)').matches, short = matchMedia('(max-height: 520px)').matches;
@@ -220,13 +245,13 @@
     const row = $('[data-ticker] .ticker__row');
     if (!row) return;
     const st = ScrollTrigger.create({ trigger: '.closing', start: 'top bottom', end: 'bottom top' });
-    let x = 0, dir = 1;
+    let x = 0, dir = 1, half = row.scrollWidth / 2;
+    ScrollTrigger.addEventListener('refresh', () => { half = row.scrollWidth / 2; });
     G.ticker.add(() => {
       if (!st.isActive) return;
       const v = st.getVelocity();
       if (v) dir = v < 0 ? -1 : 1;
       x -= (1.1 + Math.min(14, Math.abs(v) / 260)) * dir;
-      const half = row.scrollWidth / 2;
       if (x <= -half) x += half; else if (x > 0) x -= half;
       row.style.transform = `translate3d(${x}px,0,0)`;
     });
@@ -300,9 +325,13 @@
       const st = tl.scrollTrigger;
       scrollToY(st.start + (st.end - st.start) * tl.labels['s' + i] / tl.duration() + 2);
     }));
-    document.fonts.ready.then(() => ScrollTrigger.refresh());
   };
   // Pins are created in page order so each one measures the space left by the previous ones.
-  const start = () => { initStat(); startTour(); initPan(); initSemester(); initBelt(); initTicker(); ScrollTrigger.refresh(); };
+  // One init per frame, then one measuring pass: no single long task if the visitor is already scrolling.
+  const nextFrame = () => new Promise(r => requestAnimationFrame(() => r()));
+  const start = () => fontsIn.then(async () => {
+    for (const init of [initStat, startTour, initPan, initSemester, initBelt, initTicker]) { init(); await nextFrame(); }
+    ScrollTrigger.refresh();
+  });
   if (document.readyState === 'complete') start(); else addEventListener('load', start, { once: true });
 })();

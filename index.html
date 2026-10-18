@@ -19,9 +19,9 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mona+Sans:wdth,wght@75..125,400..900&display=swap">
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/MonaSans-latin.woff2" crossorigin>
+<link rel="preload" as="image" href="assets/fiche/p3.webp">
+<link rel="preload" as="image" href="assets/fiche/p8.webp">
 <link rel="preload" as="image" href="assets/fiche/p1.webp" fetchpriority="high">
 <link rel="stylesheet" href="assets/site.css">
 <script>document.documentElement.classList.add('js')</script>
@@ -103,9 +103,11 @@
     <div class="wrap hero__grid">
       <h1 class="poster hero__title">La 1<sup>re</sup> année HEC ne se révise pas au hasard.</h1>
       <div class="hero__desk" aria-hidden="true">
+        <div class="desk__tilt">
         <div class="paper paper--3"><span class="paper__in"><img src="assets/fiche/p8.webp" width="1083" height="1726" alt="" decoding="async"></span></div>
         <div class="paper paper--2"><span class="paper__in"><img src="assets/fiche/p3.webp" width="1083" height="1726" alt="" decoding="async"></span></div>
-        <div class="paper paper--1"><span class="paper__in"><img src="assets/fiche/p1.webp" width="1083" height="1726" alt="" fetchpriority="high"></span></div>
+        <div class="paper paper--1"><span class="paper__in"><img src="assets/fiche/p1.webp" width="1083" height="1726" alt="" fetchpriority="high" decoding="async"></span></div>
+        </div>
       </div>
       <div class="hero__foot">
         <p class="lede">HECPro transforme les 7&nbsp;matières du premier semestre en un parcours clair&nbsp;: tu comprends plus vite, tu sais quoi maîtriser.</p>
@@ -167,8 +169,8 @@
         </div>
         <figure class="tour__win">
           <div class="tour__cam" data-cam>
-            <img class="tour__pg" data-pg="1" src="assets/fiche/p1.webp" width="1083" height="1726" alt="Page 1 de la fiche HECPro de statistiques : objectif de la fiche, définition d’une variable, arbre des types de variables, tableau des variables qualitatives et encadré « Intuition statistique »." loading="lazy" decoding="async">
-            <img class="tour__pg" data-pg="3" src="assets/fiche/p3.webp" width="1083" height="1726" alt="Page 3 de la même fiche : encadré « Formule » sur l’amplitude et le centre de classe, encadré « Attention » sur les classes exclusives, diagramme en bâtons." loading="lazy" decoding="async">
+            <img class="tour__pg" data-pg="1" src="assets/fiche/p1.webp" width="1083" height="1726" decoding="async" alt="Page 1 de la fiche HECPro de statistiques : objectif de la fiche, définition d’une variable, arbre des types de variables, tableau des variables qualitatives et encadré « Intuition statistique ».">
+            <img class="tour__pg" data-pg="3" src="assets/fiche/p3.webp" width="1083" height="1726" decoding="async" alt="Page 3 de la même fiche : encadré « Formule » sur l’amplitude et le centre de classe, encadré « Attention » sur les classes exclusives, diagramme en bâtons.">
             <span class="tour__spot" data-spot></span>
             <svg class="tour__ink" viewBox="0 0 1083 1726" preserveAspectRatio="none" aria-hidden="true" data-ink></svg>
           </div>
@@ -239,7 +241,7 @@
         <article class="subj subj--teal reveal">
           <span class="subj__n" aria-hidden="true">7</span>
           <h3>Statistiques I</h3>
-          <p class="subj__f"><span class="math"><i>x̄</i> = <span class="frac"><span>1</span><span><i>n</i></span></span> <span class="big-op">Σ</span> <i>x<sub>i</sub></i></span></p><img class="subj__fig" src="assets/fiche/boxplot.webp" width="660" height="175" alt="Boxplot extrait de la fiche HECPro de statistiques." loading="lazy"><a class="subj__link" href="#apercu">Voir la fiche <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+          <p class="subj__f"><span class="math"><i>x̄</i> = <span class="frac"><span>1</span><span><i>n</i></span></span> <span class="big-op">Σ</span> <i>x<sub>i</sub></i></span></p><img class="subj__fig" src="assets/fiche/boxplot.webp" width="660" height="175" alt="Boxplot extrait de la fiche HECPro de statistiques." decoding="async"><a class="subj__link" href="#apercu">Voir la fiche <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
         </article>
       </div>
     </div>
