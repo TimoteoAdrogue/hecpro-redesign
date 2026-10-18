@@ -22,15 +22,22 @@ for (const scheme of ['light', 'dark']) {
       return c;
     };
     const out = [], seen = new Set();
-    const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-    for (let n; (n = w.nextNode());) {
+    document.head.insertAdjacentHTML('beforeend', '<style>*,*::before,*::after{transition:none!important}</style>'); // read final colours, not mid-transition ones
+    const zones = [...document.querySelectorAll('main [data-field], footer')];
+    const nodes = [];
+    for (const z of zones) {
+      if (z.dataset.field) document.documentElement.dataset.field = z.dataset.field;
+      const w = document.createTreeWalker(z, NodeFilter.SHOW_TEXT);
+      for (let n; (n = w.nextNode());) nodes.push([n, z.dataset.field || 'footer', getComputedStyle(n.parentElement || z).color, bgOf(n.parentElement || z)]);
+    }
+    for (const [n, field, color, bgc] of nodes) {
       const el = n.parentElement; if (!n.data.trim() || !el || el.closest('[aria-hidden="true"], dialog:not([open]), script, style, .sr-only')) continue;
       const s = getComputedStyle(el); if (s.visibility === 'hidden' || +s.opacity === 0 || el.getClientRects().length === 0) continue;
-      const fg = over(parse(s.color), bgOf(el)), bg = bgOf(el), size = parseFloat(s.fontSize), bold = +s.fontWeight >= 700;
+      const bg = bgc, fg = over(parse(color), bg), size = parseFloat(s.fontSize), bold = +s.fontWeight >= 700;
       const r = ratio(fg, bg), need = size >= 24 || (bold && size >= 18.66) ? 3 : 4.5;
-      const key = s.color + '|' + JSON.stringify(bg) + '|' + need;
+      const key = color + '|' + JSON.stringify(bg) + '|' + need;
       if (seen.has(key)) continue; seen.add(key);
-      out.push({ r: +r.toFixed(2), need, size: Math.round(size), text: n.data.trim().slice(0, 34), cls: el.className.toString().slice(0, 30), color: s.color });
+      out.push({ r: +r.toFixed(2), need, size: Math.round(size), text: n.data.trim().slice(0, 34), cls: field + ' .' + el.className.toString().slice(0, 24), color });
     }
     return out.sort((a, b) => a.r / a.need - b.r / b.need);
   });

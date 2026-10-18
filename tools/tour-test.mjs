@@ -6,7 +6,7 @@ const b = await chromium.launch({ channel: 'chrome' });
 for (const [w, h] of [[1440, 900], [390, 844]]) {
   const p = await (await b.newContext({ viewport: { width: w, height: h }, isMobile: w < 768, hasTouch: w < 768 })).newPage();
   await p.goto(url, { waitUntil: 'load' }); await p.waitForTimeout(1500);
-  const labels = await p.evaluate(() => { const st = ScrollTrigger.getAll().find(s => s.pin); const tl = st.animation;
+  const labels = await p.evaluate(() => { const st = ScrollTrigger.getAll().find(s => s.trigger && s.trigger.matches && s.trigger.matches('[data-tour]')); const tl = st.animation;
     return Object.entries(tl.labels).sort((a, b) => a[1] - b[1]).map(([k, t]) => ({ k, y: Math.round(st.start + (st.end - st.start) * t / tl.duration()) })); });
   const seq = [...labels, ...labels.slice(0, -1).reverse()];
   const rows = [];

@@ -31,15 +31,6 @@
     }
     return d;
   };
-  const roughEllipse = (cx, cy, rx, ry, seed = 3) => {
-    const r = rng(seed), ph = r() * 6, a0 = -2.3, n = 64;
-    let d = '';
-    for (let i = 0; i <= n; i++) {
-      const t = a0 + i / n * Math.PI * 2.16, q = 1 + .05 * Math.sin(3 * t + ph) + .025 * i / n;
-      d += (i ? 'L' : 'M') + f(cx + Math.cos(t) * rx * q) + ',' + f(cy + Math.sin(t) * ry * q);
-    }
-    return d;
-  };
   const pathIn = (svg, d, c) => {
     const p = document.createElementNS(NS, 'path');
     p.setAttribute('d', d);
@@ -49,29 +40,18 @@
     return p;
   };
 
-  // Count-ups start from zero; each keeps its final width so nothing shifts while it climbs.
-  if (!calm) $$('[data-count]').forEach(el => { el.style.display = 'inline-block'; el.style.minWidth = el.offsetWidth + 'px'; el.style.textAlign = 'right'; el.textContent = '0'; });
+  // Colour fields: the page takes the colour of the section crossing the middle of the screen.
+  const root = document.documentElement, theme = $('meta[name="theme-color"]');
+  const fieldIO = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    root.dataset.field = e.target.dataset.field;
+    requestAnimationFrame(() => { theme.content = getComputedStyle(root).getPropertyValue('--bg').trim() || theme.content; });
+  }), { rootMargin: '-50% 0px -50% 0px' });
+  $$('main [data-field]').forEach(s => fieldIO.observe(s)); // the footer carries its own night background
 
-  // [data-annot]: a pen box or red circle drawn around the element when it comes into view.
-  $$('[data-annot]').forEach((el, i) => {
-    const svg = document.createElementNS(NS, 'svg'), base = +(el.dataset.pad || 10);
-    svg.setAttribute('class', 'annot annot--' + (el.dataset.c || 'pen'));
-    svg.setAttribute('aria-hidden', 'true');
-    const p = pathIn(svg, '');
-    const draw = () => {
-      const pad = innerWidth < 768 ? Math.round(base * .55) : base; // tighter on phones so it stays off the next words
-      const py = el.dataset.annot === 'circle' ? Math.round(pad * .35) : pad; // a circle stays within its own line
-      const w = el.offsetWidth + pad * 2, h = el.offsetHeight + py * 2;
-      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-      Object.assign(svg.style, { left: -pad + 'px', top: -py + 'px', width: w + 'px', height: h + 'px' });
-      p.setAttribute('d', el.dataset.annot === 'circle' ? roughEllipse(w / 2, h / 2, w / 2 - 2, h / 2 - 4, 11 + i) : roughRect(3, 3, w - 6, h - 6, 5 + i));
-    };
-    el.appendChild(svg);
-    new ResizeObserver(draw).observe(el);
-  });
-
-  // 100-student grid next to the 68 %: crossed out in red pen, the rest in teal (seeded order).
+  // 100-student grid next to the 68 %, filled in a seeded order (crosses = do not make it).
   const matrix = $('[data-matrix]');
+  let cells = [];
   if (matrix) {
     const n = +matrix.dataset.n, fail = +matrix.dataset.fail, r = rng(68), order = [...Array(n).keys()];
     for (let i = n - 1; i > 0; i--) { const k = Math.floor(r() * (i + 1)); [order[i], order[k]] = [order[k], order[i]]; }
@@ -79,9 +59,9 @@
     for (let i = 0; i < n; i++) {
       const m = document.createElement('i');
       m.className = 'm ' + (failed.has(i) ? 'm--x' : 'm--o');
-      m.style.setProperty('--d', (calm ? 0 : order.indexOf(i) * .013 + .3).toFixed(3) + 's');
       grid.appendChild(m);
     }
+    cells = order.map(i => grid.children[i]);
     $('.matrix__x', matrix).className = 'm m--x';
     $('.matrix__o', matrix).className = 'm m--o';
   }
@@ -95,16 +75,6 @@
   new IntersectionObserver(([e]) => { pastHero = !e.isIntersecting && e.boundingClientRect.top < 0; syncDock(); }).observe($('[data-hero-end]'));
   const quiet = new IntersectionObserver(es => { es.forEach(e => busy[e.isIntersecting ? 'add' : 'delete'](e.target)); syncDock(); }, { rootMargin: '0px 0px -30% 0px' });
   $$('#apercu .tour__stage, #packs, .closing, .foot').forEach(el => quiet.observe(el));
-
-  const count = el => {
-    const end = +el.dataset.count, t0 = performance.now(), dur = 1400;
-    const step = now => {
-      const k = Math.min(1, (now - t0) / dur);
-      el.textContent = Math.round(end * (1 - Math.pow(1 - k, 4)));
-      if (k < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  };
 
   // Typed code in the Informatique tile.
   const typer = code => {
@@ -126,18 +96,34 @@
   };
   const typeCode = !calm && $('[data-type]') ? typer($('[data-type]')) : null;
 
-  // One-shot reveals: fades, highlighter swipes, pen drawings, counters, typing.
+  // One-shot reveals: fades, formulas written in, ticks drawn, code typed.
   const io = new IntersectionObserver(es => es.forEach(e => {
     if (!e.isIntersecting) return;
     const el = e.target;
     el.classList.add('is-in');
-    if (el.hasAttribute('data-annot') && !el.hasAttribute('data-manual')) el.classList.add('is-drawn');
-    if (el.classList.contains('packs__grid')) el.classList.add('is-seen');
-    if (!calm && el.dataset.count) count(el);
     if (typeCode && el.querySelector?.('[data-type]')) typeCode();
     io.unobserve(el);
   }), { threshold: .2, rootMargin: '0px 0px -8% 0px' });
-  $$('.reveal, .hl, .band, [data-axis], [data-annot]:not([data-manual]), [data-count], .packs__grid, [data-matrix]').forEach(el => io.observe(el));
+  $$('.reveal, .band, [data-axis]').forEach(el => io.observe(el));
+
+  // The 68 % and its grid, driven by one progress value (scroll on desktop and phone, static when calm).
+  const statN = $('[data-stat-n]');
+  const setStat = p => {
+    const on = Math.round(p * cells.length);
+    let crossed = 0;
+    cells.forEach((c, i) => { const v = i < on; c.classList.toggle('on', v); if (v && c.classList.contains('m--x')) crossed++; });
+    if (statN) statN.textContent = crossed;
+  };
+
+  // The semester, driven by one progress value: the line, the big week, the lit band, the flag.
+  const weekBig = $('[data-weekbig]');
+  const bands = $$('.band');
+  const setSemester = (p, you) => {
+    const wk = Math.min(14, Math.floor(p / .7 * 14) + 1);
+    if (weekBig) weekBig.textContent = p < .7 ? `Semaine ${wk}` : p < .9 ? 'Révisions' : 'Session';
+    bands.forEach(b => { const s = getComputedStyle(b); b.classList.toggle('is-lit', p >= parseFloat(s.getPropertyValue('--from')) - .001 && p <= parseFloat(s.getPropertyValue('--to')) + .001); });
+    if (you) you.classList.toggle('is-on', youAt >= 0 && p >= youAt);
+  };
 
   // "Tu es ici": week of the semester, only while the semester runs.
   const axis = $('[data-axis]');
@@ -166,31 +152,21 @@
   wire($('[data-menu]'), '[data-open-menu]');
   wire($('[data-reader]'), '[data-open-reader]');
 
-  // Hero: pen frame on the top sheet once the stack has landed.
-  const heroInk = $('[data-hero-ink]');
-  if (heroInk) {
-    const svg = $('.ink', heroInk), [x, y, w, h] = svg.dataset.rect.split(',').map(Number);
-    pathIn(svg, roughRect(x, y, w, h, 21));
-    setTimeout(() => heroInk.classList.add('is-drawn'), calm ? 0 : 1500);
-  }
-
-  if (!G || calm) { $('.hero .display').style.opacity = 1; return; }
+  if (!G || calm) { $('.hero__title').style.opacity = 1; setStat(1); if (weekBig) weekBig.textContent = '14 semaines'; return; }
 
   // Headlines rise line by line (masked): the hero one on load, the others as they enter.
-  const h1 = $('.hero .display');
+  const h1 = $('.hero__title');
   G.set(h1, { opacity: 1 });
   if (window.SplitText) {
     const rise = (el, onScroll) => SplitText.create(el, {
       type: 'lines', mask: 'lines', linesClass: 'ln', autoSplit: true,
-      // a split rebuilds the line markup, so highlighter marks inside are re-triggered from here
       onSplit: s => G.from(s.lines, {
-        yPercent: 108, duration: 1.15, stagger: .09, ease: 'expo.out',
+        yPercent: 112, rotation: 2, duration: 1.1, stagger: .08, ease: 'expo.out',
         scrollTrigger: onScroll ? { trigger: el, start: 'top 88%', once: true } : undefined,
-        onStart: () => $$('.hl', el).forEach(m => m.classList.add('is-in')),
       }),
     });
     rise(h1, false);
-    $$('main .h2, .closing .display').forEach(el => rise(el, true));
+    $$('main .poster:not(.hero__title)').forEach(el => rise(el, true));
   }
 
   // Hero sheets: fan apart as the page scrolls, lean toward the pointer on desktop.
@@ -201,25 +177,66 @@
     $('.hero').addEventListener('pointermove', e => { qx((e.clientX / innerWidth - .5) * -22); qy((e.clientY / innerHeight - .5) * -14); });
   }
 
-  // Closing: the sheets from the hero drift back in as a bookend.
-  [['.closing__sheet--l img', -60], ['.closing__sheet--r img', 70]].forEach(([sel, y]) => G.fromTo(sel, { y: -y }, { y, ease: 'none', scrollTrigger: { trigger: '.closing', start: 'top bottom', end: 'bottom top', scrub: .6 } }));
+  const phone = matchMedia('(max-width: 767px)').matches, short = matchMedia('(max-height: 520px)').matches;
 
-  // Semester axis fills with the scroll; the "Tu es ici" flag pops when the line reaches it.
-  if (axis) {
+  // Le constat: pinned while the number climbs and the class gets crossed out.
+  const initStat = () => {
+    if (short) return setStat(1);
+    setStat(0);
+    ScrollTrigger.create({ trigger: '[data-stat]', start: 'top top', end: '+=110%', pin: true, scrub: true, onUpdate: st => setStat(st.progress) });
+  };
+
+  // Matières: the cards run sideways while the section is pinned.
+  const initPan = () => {
+    const pan = $('[data-hpan]'), track = $('.hpan__track', pan);
+    if (!pan || short) return;
+    pan.classList.add('is-live');
+    const dist = () => Math.max(0, track.scrollWidth - innerWidth);
+    G.to(track, { x: () => -dist(), ease: 'none', scrollTrigger: { trigger: '.subjects', start: 'top top', end: () => '+=' + dist(), pin: true, scrub: .6, invalidateOnRefresh: true } });
+  };
+
+  // Le semestre: pinned on desktop while the line runs; on phones the vertical line follows the scroll.
+  const initSemester = () => {
+    if (!axis) return;
     axis.classList.add('is-scrub');
-    const you = $('[data-you]', axis);
-    const down = matchMedia('(max-width: 767px)').matches; // phones: the line runs down the page
-    G.fromTo($('.axis__draw', axis), down ? { scaleX: 1, scaleY: 0 } : { scaleX: 0 }, { scaleX: 1, scaleY: 1, ease: 'none', scrollTrigger: {
-      trigger: axis, start: 'top 78%', end: 'bottom 62%', scrub: .5,
-      onUpdate: st => you.classList.toggle('is-on', youAt >= 0 && st.progress >= youAt),
-    } });
-  }
+    const you = $('[data-you]', axis), draw = $('.axis__draw', axis);
+    const update = p => { G.set(draw, phone ? { scaleX: 1, scaleY: p } : { scaleX: p }); setSemester(p, you); };
+    update(0);
+    ScrollTrigger.create(phone || short
+      ? { trigger: axis, start: 'top 75%', end: 'bottom 55%', scrub: .5, onUpdate: st => update(st.progress) }
+      : { trigger: '[data-semester]', start: 'top top', end: '+=130%', pin: true, scrub: .5, onUpdate: st => update(st.progress) });
+  };
+
+  // Avis: the belt of stickers slides left as the page scrolls down.
+  const initBelt = () => {
+    const belt = $('[data-belt]'), track = $('.avis__track', belt);
+    if (!belt) return;
+    belt.classList.add('is-live');
+    G.fromTo(track, { x: () => innerWidth * .15 }, { x: () => -(track.scrollWidth - innerWidth * .85), ease: 'none', scrollTrigger: { trigger: '.avis', start: 'top bottom', end: 'bottom top', scrub: .5, invalidateOnRefresh: true } });
+  };
+
+  // Closing ticker: drifts on its own, speeds up with the scroll and follows its direction.
+  const initTicker = () => {
+    const row = $('[data-ticker] .ticker__row');
+    if (!row) return;
+    const st = ScrollTrigger.create({ trigger: '.closing', start: 'top bottom', end: 'bottom top' });
+    let x = 0, dir = 1;
+    G.ticker.add(() => {
+      if (!st.isActive) return;
+      const v = st.getVelocity();
+      if (v) dir = v < 0 ? -1 : 1;
+      x -= (1.1 + Math.min(14, Math.abs(v) / 260)) * dir;
+      const half = row.scrollWidth / 2;
+      if (x <= -half) x += half; else if (x > 0) x -= half;
+      row.style.transform = `translate3d(${x}px,0,0)`;
+    });
+  };
 
   // The fiche tour: pinned stage, a camera glides over the real page, a pen frames each box.
   const stage = $('[data-tour]');
   const startTour = () => {
     // too short to pin (phone in landscape): keep the static list with the full page
-    if (!stage || matchMedia('(max-height: 520px)').matches) return;
+    if (!stage || short) return;
     stage.closest('.tour').classList.add('is-live');
 
     const win = $('.tour__win', stage), cam = $('[data-cam]', stage), spot = $('[data-spot]', stage), ink = $('[data-ink]', stage);
@@ -285,5 +302,7 @@
     }));
     document.fonts.ready.then(() => ScrollTrigger.refresh());
   };
-  if (document.readyState === 'complete') startTour(); else addEventListener('load', startTour, { once: true });
+  // Pins are created in page order so each one measures the space left by the previous ones.
+  const start = () => { initStat(); startTour(); initPan(); initSemester(); initBelt(); initTicker(); ScrollTrigger.refresh(); };
+  if (document.readyState === 'complete') start(); else addEventListener('load', start, { once: true });
 })();

@@ -13,10 +13,10 @@ await p.waitForFunction(() => window.ScrollTrigger, null, { timeout: 15000 }).ca
 await p.waitForTimeout(3200);
 await p.screenshot({ path: `${out}/01-hero.png` });
 const spots = [['02-constat', '#constat', 0], ['03-tour', 'tour', 3], ['04-matieres', '#matieres', 0], ['05-methode', '#methode', 0],
-  ['06-packs', '#packs', 0], ['07-packs2', '.packs__grid', -80], ['08-coaching', '#coaching', 0], ['09-faq', '#faq', 0], ['10-faq2', '.faq__list', 200], ['11-closing', '.closing', 0], ['12-foot', '.foot', 0]];
+  ['06-packs', '#packs', 0], ['07-packs2', '.packs__grid', -80], ['08-coaching', '#coaching', 0], ['09-avis', '#avis', 0], ['10-faq', '#faq', 0], ['11-closing', '.closing', 0], ['12-foot', '.foot', 0]];
 for (const [name, sel, off] of spots) {
   if (sel === 'tour') {
-    await p.evaluate(i => { const st = ScrollTrigger.getAll().find(s => s.pin); if (!st) return document.querySelector('#apercu').scrollIntoView();
+    await p.evaluate(i => { const st = ScrollTrigger.getAll().find(s => s.trigger && s.trigger.matches && s.trigger.matches('[data-tour]')); if (!st) return document.querySelector('#apercu').scrollIntoView();
       const tl = st.animation; scrollTo(0, st.start + (st.end - st.start) * tl.labels['s' + i] / tl.duration() + 2); }, off);
   } else {
     // walk down in steps so scroll-triggered effects fire on the way
