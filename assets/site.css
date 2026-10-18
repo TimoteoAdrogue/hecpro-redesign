@@ -160,10 +160,11 @@ svg[aria-hidden] { width: 1.15em; height: 1.15em; fill: currentColor; flex: none
   box-shadow: 0 1px 0 var(--rule);
 }
 .top__in { height: 100%; display: flex; align-items: center; gap: 32px; }
-.brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
-.brand__mark { width: 34px; height: 28px; color: var(--teal); fill: var(--teal); }
-.brand__word { font: 700 1.24rem/1 var(--serif); letter-spacing: -.01em; }
-.brand__word span { color: var(--teal-ink); }
+.brand { display: inline-flex; align-items: center; text-decoration: none; color: var(--ink); }
+/* generated lockup (tools/logo.py): ink follows currentColor, accents follow the tokens; 5.1422 = its viewBox ratio */
+svg.brand__lockup { display: block; height: 34px; width: auto; aspect-ratio: 5.1422; fill: currentColor; color: var(--ink); flex: none; }
+.foot svg.brand__lockup { height: 42px; }
+.menu__head svg.brand__lockup { height: 30px; }
 .top__nav { display: flex; gap: 26px; margin-left: auto; }
 .top__nav a, .top__login { font: 500 .93rem var(--sans); text-decoration: none; color: var(--ink-2); transition: color .2s; }
 .top__nav a:hover, .top__login:hover { color: var(--ink); }
@@ -508,7 +509,8 @@ figcaption { margin-top: 16px; font: 400 .9rem var(--mono); color: var(--ink-2);
 .foot a { text-decoration: none; }
 .foot a:hover { color: var(--ink); }
 .foot__legal { grid-column: 1 / -1; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 32px; padding-top: 24px; border-top: 1px solid var(--rule); }
-.foot__legal p:nth-child(2) { display: flex; gap: 24px; flex-wrap: wrap; }
+.foot__legal p:nth-child(2) { display: flex; gap: 6px 24px; flex-wrap: wrap; }
+.copy { font: 400 1em/1 system-ui, sans-serif; }
 
 /* Mobile dock */
 .dock { display: none; }
