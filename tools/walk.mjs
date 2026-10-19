@@ -15,9 +15,9 @@ await cdp.send('Page.startScreencast', { format: 'jpeg', quality: 80, maxWidth: 
 await p.waitForTimeout(2800);
 await p.mouse.move(+w * .7, +h * .5);
 for (let i = 0; i < 3000; i++) {
-  await p.mouse.wheel(0, 30);
+  await p.mouse.wheel(0, +(process.env.STEP || 30));
   await p.waitForTimeout(16);
-  if (i % 40 === 0 && await p.evaluate(() => scrollY + innerHeight >= document.documentElement.scrollHeight - 4)) break;
+  if (i % 20 === 0 && await p.evaluate(stop => scrollY + innerHeight >= document.documentElement.scrollHeight - 4 || (stop && scrollY >= stop), +(process.env.STOP || 0))) break;
 }
 await p.waitForTimeout(1500);
 await cdp.send('Page.stopScreencast');

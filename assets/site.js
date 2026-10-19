@@ -74,7 +74,8 @@
   const busy = new Set(); // sections with their own CTA or full-screen content: no dock over them
   const syncDock = () => dock.classList.toggle('is-on', pastHero && !busy.size);
   new IntersectionObserver(([e]) => top.classList.toggle('is-solid', !e.isIntersecting)).observe($('[data-hero-top]'));
-  new IntersectionObserver(([e]) => { pastHero = !e.isIntersecting && e.boundingClientRect.top < 0; syncDock(); }).observe($('[data-hero-end]'));
+  // watch the whole hero, not a 1px marker: a jump (menu link, shared link) from the hero to anywhere still registers
+  new IntersectionObserver(([e]) => { pastHero = !e.isIntersecting && e.boundingClientRect.top < 0; syncDock(); }).observe($('.hero'));
   const quiet = new IntersectionObserver(es => { es.forEach(e => busy[e.isIntersecting ? 'add' : 'delete'](e.target)); syncDock(); }, { rootMargin: '0px 0px -30% 0px' });
   $$('#apercu .tour__stage, #packs, .closing, .foot').forEach(el => quiet.observe(el));
 
@@ -158,7 +159,14 @@
   });
   setTimeout(() => $$('.hero .paper').forEach(pp => pp.classList.add('is-ready')), 2500);
   // The reader's other pages are fetched quietly once the page is idle.
-  addEventListener('load', () => (window.requestIdleCallback || setTimeout)(() => $$('.reader img').forEach(i => { i.loading = 'eager'; }), { timeout: 4000 }), { once: true });
+  addEventListener('load', () => (window.requestIdleCallback || setTimeout)(() => $$('.reader img, .closing__sheet img').forEach(i => { i.loading = 'eager'; i.decode?.().catch(() => {}); }), { timeout: 4000 }), { once: true });
+
+  // In-page links keep the address bar in step (the link can be shared), and the skip link moves focus.
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[href^="#"]'); if (!a || a.getAttribute('href').length < 2) return;
+    history.replaceState(null, '', a.getAttribute('href'));
+    if (a.classList.contains('skip')) $('#contenu').focus({ preventScroll: true });
+  });
 
   // Dialogs: mobile menu and the 8-page reader. Smooth scroll pauses while one is open.
   const wire = (dialog, openSel) => {
@@ -208,7 +216,9 @@
   const initStat = () => {
     if (short) return setStat(1);
     setStat(0);
-    ScrollTrigger.create({ trigger: '[data-stat]', start: 'top top', end: '+=110%', pin: true, scrub: true, onUpdate: st => setStat(st.progress) });
+    // the count starts while the slide comes up, so it never rests on 0 % and peaks soon after it pins
+    ScrollTrigger.create({ trigger: '[data-stat]', start: 'top top', end: '+=75%', pin: true });
+    ScrollTrigger.create({ trigger: '[data-stat]', start: 'top 70%', end: () => '+=' + Math.round(innerHeight * 1.15), scrub: true, onUpdate: st => setStat(st.progress) });
   };
 
   // Matières: the cards run sideways while the section is pinned.
@@ -217,7 +227,13 @@
     if (!pan || short) return;
     pan.classList.add('is-live');
     const dist = () => Math.max(0, track.scrollWidth - innerWidth);
-    G.to(track, { x: () => -dist(), ease: 'none', scrollTrigger: { trigger: '.subjects', start: 'top top', end: () => '+=' + dist(), pin: true, scrub: .6, invalidateOnRefresh: true } });
+    const tw = G.to(track, { x: () => -dist(), ease: 'none', scrollTrigger: { trigger: '.subjects', start: 'top top', end: () => '+=' + Math.round(dist() * .8), pin: true, scrub: .6, invalidateOnRefresh: true } });
+    // keyboard: focusing a link in a card that is off screen scrolls the page to that card
+    pan.addEventListener('focusin', e => {
+      const card = e.target.closest('.subj'); if (!card) return;
+      const st = tw.scrollTrigger, want = Math.min(1, Math.max(0, (card.offsetLeft - innerWidth * .3) / dist()));
+      scrollToY(st.start + (st.end - st.start) * want);
+    });
   };
 
   // Le semestre: pinned on desktop while the line runs; on phones the vertical line follows the scroll.
@@ -229,7 +245,7 @@
     update(0);
     ScrollTrigger.create(phone || short
       ? { trigger: axis, start: 'top 75%', end: 'bottom 55%', scrub: .5, onUpdate: st => update(st.progress) }
-      : { trigger: '[data-semester]', start: 'top top', end: '+=130%', pin: true, scrub: .5, onUpdate: st => update(st.progress) });
+      : { trigger: '[data-semester]', start: 'top top', end: '+=95%', pin: true, scrub: .5, onUpdate: st => update(st.progress) });
   };
 
   // Avis: the belt of stickers slides left as the page scrolls down.
@@ -295,7 +311,7 @@
     const tl = G.timeline({
       defaults: { ease: 'power2.inOut' },
       scrollTrigger: {
-        trigger: stage, start: 'top top', end: () => '+=' + Math.round((steps.length - 1) * innerHeight * .9),
+        trigger: stage, start: 'top top', end: () => '+=' + Math.round((steps.length - 1) * innerHeight * .65),
         pin: true, scrub: .6, invalidateOnRefresh: true,
       },
       onUpdate() {
@@ -326,12 +342,27 @@
       scrollToY(st.start + (st.end - st.start) * tl.labels['s' + i] / tl.duration() + 2);
     }));
   };
+  // Closing: the sheets rise back in on the right as the page ends.
+  const initCloser = () => {
+    [['.closing__sheet--a img', 140, -6], ['.closing__sheet--b img', 220, 8], ['.closing__sheet--c img', 300, -3]].forEach(([sel, y, r]) =>
+      G.fromTo(sel, { y, rotation: r, transformPerspective: 1100, rotationX: 28 }, { y: 0, rotation: 0, rotationX: 0, ease: 'none', scrollTrigger: { trigger: '.closing', start: 'top bottom', end: 'bottom bottom', scrub: .8 } }));
+  };
+
   // Pins are created in page order so each one measures the space left by the previous ones.
   // One init per frame, then one measuring pass: no single long task if the visitor is already scrolling.
   const nextFrame = () => new Promise(r => requestAnimationFrame(() => r()));
   const start = () => fontsIn.then(async () => {
     for (const init of [initStat, startTour, initPan, initSemester, initBelt, initTicker]) { init(); await nextFrame(); }
+    initCloser(); await nextFrame();
     ScrollTrigger.refresh();
+    // a shared link (/#packs) is honoured once the pins exist: the browser's own jump happened before they did
+    const target = location.hash.length > 1 && document.getElementById(location.hash.slice(1));
+    if (target) {
+      await nextFrame();
+      lenis?.resize(); // its cached page height predates the pin spacers and would clamp the jump
+      const y = target.getBoundingClientRect().top + scrollY - 80;
+      lenis ? lenis.scrollTo(y, { immediate: true, force: true }) : scrollTo(0, y);
+    }
   });
   if (document.readyState === 'complete') start(); else addEventListener('load', start, { once: true });
 })();
