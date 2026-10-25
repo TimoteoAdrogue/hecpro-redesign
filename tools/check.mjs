@@ -23,7 +23,8 @@ for (let y = 0; y < total + stepPx; y += stepPx) {
   const now = await p.evaluate(() => scrollY + innerHeight >= document.documentElement.scrollHeight - 2);
   if (now) break;
 }
-const ov = await p.evaluate(() => ({ sw: document.documentElement.scrollWidth, iw: innerWidth, h: document.documentElement.scrollHeight,
-  wide: [...document.querySelectorAll('body *')].filter(e => { const r = e.getBoundingClientRect(); return r.right > innerWidth + 1 && getComputedStyle(e).position !== 'fixed' && !e.closest('.avis__row') && !e.closest('.hero__desk') && !e.closest('.tour__win') && !e.closest('dialog'); }).slice(0, 8).map(e => e.tagName + '.' + e.className + ' ' + Math.round(e.getBoundingClientRect().right)) }));
+// compare with the configured screen width: on a phone an over-wide page widens innerWidth itself and hides the overflow
+const ov = await p.evaluate(W => ({ sw: Math.max(document.documentElement.scrollWidth, innerWidth), iw: W, h: document.documentElement.scrollHeight,
+  wide: [...document.querySelectorAll('body *')].filter(e => { const r = e.getBoundingClientRect(); return r.right > W + 1 && getComputedStyle(e).position !== 'fixed' && !e.closest('.avis__row') && !e.closest('.hero__desk') && !e.closest('.tour__win') && !e.closest('dialog'); }).slice(0, 8).map(e => e.tagName + '.' + e.className + ' ' + Math.round(e.getBoundingClientRect().right)) }), +w);
 console.log(JSON.stringify({ shots: i, ...ov, errs }, null, 1));
 await b.close();

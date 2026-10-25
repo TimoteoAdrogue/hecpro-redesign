@@ -64,8 +64,9 @@
       grid.appendChild(m);
     }
     cells = order.map(i => grid.children[i]);
-    $('.matrix__x', matrix).className = 'm m--x';
-    $('.matrix__o', matrix).className = 'm m--o';
+    // legend swatches (only the ones the caption actually has)
+    $$('.matrix__x', matrix).forEach(s => { s.className = 'm m--x on'; });
+    $$('.matrix__o', matrix).forEach(s => { s.className = 'm m--o on'; });
   }
 
   // Header turns solid once the hero copy scrolls under it; mobile dock shows between hero and packs.
@@ -124,33 +125,17 @@
     if (statN) statN.textContent = on ? crossedUpTo[on - 1] : 0;
   };
 
-  // The semester, driven by one progress value: the line, the big week, the lit band, the flag.
+  // The semester, driven by one progress value: the line runs, each of the client's three blocks lights up
+  // in turn, and the big word shows the title of the block in focus.
   const weekBig = $('[data-weekbig]');
-  const bands = $$('.band').map(b => { const s = getComputedStyle(b); return [b, parseFloat(s.getPropertyValue('--from')), parseFloat(s.getPropertyValue('--to'))]; });
-  let weekTxt = '';
-  const setSemester = (p, you) => {
-    const wk = Math.min(14, Math.floor(p / .7 * 14) + 1);
-    const txt = p < .7 ? `Semaine ${wk}` : p < .9 ? 'Révisions' : 'Session';
-    if (weekBig && txt !== weekTxt) weekBig.textContent = weekTxt = txt;
-    bands.forEach(([b, from, to]) => b.classList.toggle('is-lit', p >= from - .001 && p <= to + .001));
-    if (you) you.classList.toggle('is-on', youAt >= 0 && p >= youAt);
-  };
-
-  // "Tu es ici": week of the semester, only while the semester runs.
   const axis = $('[data-axis]');
-  let youAt = -1;
-  if (axis) {
-    const weeks = +axis.dataset.weeks;
-    const days = Math.floor((Date.now() - new Date(axis.dataset.start + 'T00:00:00')) / 864e5);
-    const wk = Math.floor(days / 7) + 1;
-    if (days >= 0 && wk <= weeks) {
-      const you = $('[data-you]', axis);
-      youAt = (wk - .5) / weeks * .7;
-      $('[data-week]', you).textContent = wk;
-      you.style.setProperty('--you', youAt.toFixed(4));
-      you.hidden = false;
-    }
-  }
+  const bands = $$('.band').map(b => { const s = getComputedStyle(b); return [b, parseFloat(s.getPropertyValue('--from')), parseFloat(s.getPropertyValue('--to')), $('h3', b).textContent]; });
+  let weekTxt = '';
+  const setSemester = p => {
+    let focus = bands[0];
+    bands.forEach(band => { const [b, from, to] = band; const lit = p >= from - .001 && p <= to + .001; b.classList.toggle('is-lit', lit); if (p >= from - .001) focus = band; });
+    if (weekBig && focus && focus[3] !== weekTxt) weekBig.textContent = weekTxt = focus[3];
+  };
 
   // Hero sheets enter only once their picture is decoded: no white card falling, no pop-in.
   $$('.hero .paper').forEach(pp => {
@@ -179,7 +164,7 @@
   wire($('[data-menu]'), '[data-open-menu]');
   wire($('[data-reader]'), '[data-open-reader]');
 
-  if (!G || calm) { $('.hero__title').style.opacity = 1; setStat(1); if (weekBig) weekBig.textContent = '14 semaines'; return; }
+  if (!G || calm) { $('.hero__title').style.opacity = 1; setStat(1); return; }
 
   // Headlines rise line by line (masked): the hero one on load, the others as they enter.
   // Split after the brand font is in, so lines are measured once and never re-split mid-scroll.
@@ -240,8 +225,8 @@
   const initSemester = () => {
     if (!axis) return;
     axis.classList.add('is-scrub');
-    const you = $('[data-you]', axis), draw = $('.axis__draw', axis);
-    const update = p => { G.set(draw, phone ? { scaleX: 1, scaleY: p } : { scaleX: p }); setSemester(p, you); };
+    const draw = $('.axis__draw', axis);
+    const update = p => { G.set(draw, phone ? { scaleX: 1, scaleY: p } : { scaleX: p }); setSemester(p); };
     update(0);
     ScrollTrigger.create(phone || short
       ? { trigger: axis, start: 'top 75%', end: 'bottom 55%', scrub: .5, onUpdate: st => update(st.progress) }

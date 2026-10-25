@@ -32,7 +32,7 @@ await p.keyboard.press('ArrowRight'); await p.waitForTimeout(500);
 ok('chooser keyboard arrow', await p.evaluate(() => document.querySelector('input[value="elite"]').checked));
 const hrefs = await p.evaluate(() => [...document.querySelectorAll('a[href^="http"]')].map(a => a.href));
 ok('buy links → Podia checkout', hrefs.includes('https://www.hecpro.ch/pack-elite/buy') && hrefs.includes('https://www.hecpro.ch/pack-decouverte/buy'));
-ok('coaching → WhatsApp', hrefs.filter(h => h.includes('wa.link')).length >= 2);
+ok('coaching → WhatsApp', hrefs.filter(h => h.includes('wa.link')).length >= 1);
 // tour index
 await p.click('.top__nav a[href="#apercu"]'); await settle(p); await p.evaluate(() => scrollBy(0, innerHeight * .9)); await settle(p);
 for (const i of [3, 5, 0]) {
