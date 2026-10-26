@@ -43,7 +43,7 @@
   // Colour fields: the page takes the colour of the section crossing the middle of the screen.
   const root = document.documentElement, theme = $('meta[name="theme-color"]');
   // fixed table: reading the computed colour here would force a full style recalc on every switch
-  const fieldHex = { teal: '#14BDB6', coral: '#FF6A4D', chalk: matchMedia('(prefers-color-scheme: dark)').matches ? '#141A24' : '#F3F4F1', night: '#0B0F17', lemon: '#FFE15B', lilac: '#C9B8FF' };
+  const fieldHex = { teal: '#14BDB6', coral: '#F07167', chalk: matchMedia('(prefers-color-scheme: dark)').matches ? '#0B2C36' : '#FAF7EA', night: '#05222C', peach: '#FED9B7', ocean: '#00657F' };
   const fieldIO = new IntersectionObserver(es => es.forEach(e => {
     if (!e.isIntersecting || root.dataset.field === e.target.dataset.field) return;
     root.dataset.field = e.target.dataset.field;

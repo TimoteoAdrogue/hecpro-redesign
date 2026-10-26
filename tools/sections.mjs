@@ -9,6 +9,7 @@ const b = await chromium.launch({ channel: 'chrome' });
 const mobile = +w < 768;
 const p = await (await b.newContext({ viewport: { width: +w, height: +h }, isMobile: mobile, hasTouch: mobile })).newPage();
 await p.goto(url, { waitUntil: 'load' });
+if (process.env.CSS) await p.addStyleTag({ path: process.env.CSS }); // palette trials: inject an override sheet
 await p.waitForFunction(() => window.ScrollTrigger, null, { timeout: 15000 }).catch(() => console.log('no ScrollTrigger: CDN slow?'));
 await p.waitForTimeout(3200);
 await p.screenshot({ path: `${out}/01-hero.png` });
