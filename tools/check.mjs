@@ -25,6 +25,9 @@ for (let y = 0; y < total + stepPx; y += stepPx) {
 }
 // compare with the configured screen width: on a phone an over-wide page widens innerWidth itself and hides the overflow
 const ov = await p.evaluate(W => ({ sw: Math.max(document.documentElement.scrollWidth, innerWidth), iw: W, h: document.documentElement.scrollHeight,
+  // header and dock labels on one line: a wrapped label overflows nothing, so the width check above cannot see it
+  wrapped: [...document.querySelectorAll('.top a, .top button, .dock a')].filter(e => { // flex items report one box, so count the text's line boxes
+    const w = document.createTreeWalker(e, NodeFilter.SHOW_TEXT); for (let t; (t = w.nextNode());) { if (!t.data.trim()) continue; const r = document.createRange(); r.selectNodeContents(t); if (r.getClientRects().length > 1) return true; } return false; }).map(e => e.textContent.trim()),
   wide: [...document.querySelectorAll('body *')].filter(e => { const r = e.getBoundingClientRect(); return r.right > W + 1 && getComputedStyle(e).position !== 'fixed' && !e.closest('.avis__row') && !e.closest('.hero__desk') && !e.closest('.tour__win') && !e.closest('dialog'); }).slice(0, 8).map(e => e.tagName + '.' + e.className + ' ' + Math.round(e.getBoundingClientRect().right)) }), +w);
 console.log(JSON.stringify({ shots: i, ...ov, errs }, null, 1));
 await b.close();
