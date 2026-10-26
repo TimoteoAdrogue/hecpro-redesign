@@ -26,8 +26,8 @@ for (const id of ['apercu', 'matieres', 'packs', 'coaching', 'avis', 'faq']) {
 await p.evaluate(() => scrollTo(0, 0)); await settle(p);
 await p.click('.hero a[href="#packs"]'); await settle(p); ok('hero CTA → packs', Math.abs(await topOf(p, '#packs')) < 140, `top=${await topOf(p, '#packs')}`);
 await p.click('label:has(input[value="decouverte"])'); await p.waitForTimeout(700);
-const ch = await p.evaluate(() => ({ d: getComputedStyle(document.querySelector('.pack--decouverte')).boxShadow, e: getComputedStyle(document.querySelector('.pack--elite')).boxShadow, note: [...document.querySelectorAll('.chooser__note')].filter(n => n.offsetParent).map(n => n.dataset.for) }));
-ok('chooser picks Découverte', ch.d !== 'none' && ch.e === 'none' && ch.note.join() === 'decouverte', JSON.stringify(ch.note));
+const ch = await p.evaluate(() => ({ d: new DOMMatrix(getComputedStyle(document.querySelector('.pack--decouverte')).transform).f, e: new DOMMatrix(getComputedStyle(document.querySelector('.pack--elite')).transform).f, note: [...document.querySelectorAll('.chooser__note')].filter(n => n.offsetParent).map(n => n.dataset.for) }));
+ok('chooser picks Découverte', ch.d < -3 && Math.abs(ch.e) < 1 &&  /* the chosen pack lifts; read the lift, not a material (shadow) */ ch.note.join() === 'decouverte', JSON.stringify(ch.note));
 await p.keyboard.press('ArrowRight'); await p.waitForTimeout(500);
 ok('chooser keyboard arrow', await p.evaluate(() => document.querySelector('input[value="elite"]').checked));
 const hrefs = await p.evaluate(() => [...document.querySelectorAll('a[href^="http"]')].map(a => a.href));

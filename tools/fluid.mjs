@@ -26,6 +26,7 @@ await p.addInitScript(() => {
 });
 if (process.env.CSS) await p.addInitScript(css => addEventListener('DOMContentLoaded', () => document.head.insertAdjacentHTML('beforeend', `<style>${css}</style>`)), process.env.CSS);
 await p.goto(process.env.URL || 'http://127.0.0.1:8731/', { waitUntil: 'domcontentloaded' });
+if (process.env.CSS) await p.addStyleTag({ content: process.env.CSS }); // trials: inject rules, e.g. to find what costs a frame
 await p.waitForTimeout(+(process.env.WAIT || 2500));
 await p.evaluate(() => { window.__f = []; window.__y = []; window.__lt = []; window.__t0 = performance.now(); });
 await p.mouse.move(+w * .6, +h * .5);
