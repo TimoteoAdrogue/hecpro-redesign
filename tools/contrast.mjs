@@ -33,7 +33,8 @@ for (const scheme of ['light', 'dark']) {
     for (const z of zones) {
       if (z.dataset.field) document.documentElement.dataset.field = z.dataset.field;
       const w = document.createTreeWalker(z, NodeFilter.SHOW_TEXT);
-      for (let n; (n = w.nextNode());) nodes.push([n, z.dataset.field || 'footer', getComputedStyle(n.parentElement || z).color, bgOf(n.parentElement || z)]);
+      // read colours while this zone's field is set: hollow text (a stroke, fill = page colour or none) uses the stroke as its ink
+      for (let n; (n = w.nextNode());) { const cs = getComputedStyle(n.parentElement || z); nodes.push([n, z.dataset.field || 'footer', parseFloat(cs.webkitTextStrokeWidth) > 0 ? cs.webkitTextStrokeColor : cs.color, bgOf(n.parentElement || z)]); }
     }
     for (const [n, field, color, bgc] of nodes) {
       const el = n.parentElement; if (!n.data.trim() || !el || el.closest('[aria-hidden="true"], dialog:not([open]), script, style, .sr-only')) continue;

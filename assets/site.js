@@ -245,7 +245,7 @@
   // The hero one arrives fast on load and settles into the drift (data-kick).
   const initTicker = () => $$('[data-ticker]').forEach(t => {
     const row = $('.ticker__row', t);
-    const st = ScrollTrigger.create({ trigger: t.closest('section'), start: 'top bottom', end: 'bottom top' });
+    const st = ScrollTrigger.create({ trigger: t.closest('section') || t, start: 'top bottom', end: 'bottom top' });
     let x = 0, dir = 1, half = row.scrollWidth / 2, kick = 'kick' in t.dataset ? 34 : 0;
     ScrollTrigger.addEventListener('refresh', () => { half = row.scrollWidth / 2; });
     G.ticker.add(() => {
