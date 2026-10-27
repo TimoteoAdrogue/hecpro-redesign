@@ -117,11 +117,11 @@ svg.brand__lockup { display: block; height: 34px; width: auto; aspect-ratio: 5.1
 /* Hero */
 /* the sheets are allowed to leave the hero and slide onto the next slide: no vertical clipping here */
 .hero { position: relative; z-index: 1; min-height: 100dvh; padding-top: calc(var(--head) + 2vh); display: flex; flex-direction: column; overflow-x: clip; overflow-y: visible; }
-.hero__grid { flex: 1; display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); grid-template-rows: auto 1fr; column-gap: 32px; }
+.hero__grid { flex: 1; display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); grid-template-rows: auto 1fr auto; column-gap: 32px; }
 .hero__title { grid-column: 1; grid-row: 1; font-size: min(8.6vw, 14vh); line-height: .86; position: relative; z-index: 2; padding-top: 2vh; }
-.hero__foot { grid-column: 1; grid-row: 2; align-self: end; padding-bottom: 3vh; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 24px 40px; position: relative; z-index: 2; }
+.hero__foot { grid-column: 1; grid-row: 3; align-self: end; padding-bottom: 3vh; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 24px 40px; position: relative; z-index: 2; }
 .hero__ctas { display: flex; gap: 12px; flex-wrap: wrap; }
-.hero__desk { grid-column: 2; grid-row: 1 / span 2; position: relative; min-height: 420px; z-index: 1; perspective: 1500px; perspective-origin: 40% 30%; }
+.hero__desk { grid-column: 2; grid-row: 1 / span 3; position: relative; min-height: 420px; z-index: 1; perspective: 1500px; perspective-origin: 40% 30%; }
 /* no shared 3D scene: each sheet carries its own perspective (cheap); overlapping planes in preserve-3d get split every frame */
 .desk__tilt { position: absolute; inset: 0; will-change: transform; }
 .paper { position: absolute; width: min(25vw, 360px); transform: rotate(var(--r)); }
@@ -144,6 +144,10 @@ svg.brand__lockup { display: block; height: 34px; width: auto; aspect-ratio: 5.1
 .chips ul::-webkit-scrollbar { display: none; }
 .chips li { padding: 9px 16px; border-radius: 999px; background: var(--c-aqua); font: 600 .9rem var(--sans); white-space: nowrap; } /* solid light teal (hero only): the sheets pass behind */
 .chips { z-index: 3; }
+/* the closing ticker, opened up at poster scale: full bleed in the free row between the title and the foot,
+   behind the sheets so the subjects slide under the paper */
+.ticker.hero__band { grid-column: 1 / -1; grid-row: 2; align-self: center; margin: 0 calc(50% - 50vw); position: relative; z-index: 0; }
+.hero__band .ticker__row { font-size: min(13vw, 17vh); line-height: .9; padding-block: .04em; }
 .hero__sentinel { position: absolute; left: 0; width: 1px; height: 1px; pointer-events: none; }
 .hero__sentinel--top { top: 48px; }
 .hero__sentinel--end { bottom: 0; }
@@ -465,7 +469,9 @@ html:not(.js) .foot, .foot { background: var(--c-night); color: var(--c-chalk); 
   .top__end { margin-left: auto; }
   .hero__grid { grid-template-columns: 1fr; grid-template-rows: auto; }
   .hero__title { grid-row: auto; font-size: 15.4vw; }
-  .hero__desk { grid-column: 1; grid-row: auto; min-height: 0; height: 84vw; margin: 6px 0 10px; }
+  .hero__desk { grid-column: 1; grid-row: auto; min-height: 0; height: 70vw; margin: 6px 0 0; }
+  .ticker.hero__band { grid-row: auto; margin-block: 0 14px; }
+  .hero__band .ticker__row { font-size: 19vw; }
   .paper { width: 40vw; }
   .hero__desk { perspective: none; } /* no pointer tilt on phones; each sheet keeps its own perspective */
   .paper--1 { left: 24%; top: 4%; } .paper--2 { left: 50%; top: 10%; } .paper--3 { left: 2%; top: 14%; }

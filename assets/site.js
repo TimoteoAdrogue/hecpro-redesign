@@ -241,22 +241,23 @@
     G.fromTo(track, { x: () => innerWidth * .15 }, { x: () => -(track.scrollWidth - innerWidth * .85), ease: 'none', scrollTrigger: { trigger: '.avis', start: 'top bottom', end: 'bottom top', scrub: .5, invalidateOnRefresh: true } });
   };
 
-  // Closing ticker: drifts on its own, speeds up with the scroll and follows its direction.
-  const initTicker = () => {
-    const row = $('[data-ticker] .ticker__row');
-    if (!row) return;
-    const st = ScrollTrigger.create({ trigger: '.closing', start: 'top bottom', end: 'bottom top' });
-    let x = 0, dir = 1, half = row.scrollWidth / 2;
+  // Tickers (hero and closing): drift on their own, speed up with the scroll and follow its direction.
+  // The hero one arrives fast on load and settles into the drift (data-kick).
+  const initTicker = () => $$('[data-ticker]').forEach(t => {
+    const row = $('.ticker__row', t);
+    const st = ScrollTrigger.create({ trigger: t.closest('section'), start: 'top bottom', end: 'bottom top' });
+    let x = 0, dir = 1, half = row.scrollWidth / 2, kick = 'kick' in t.dataset ? 34 : 0;
     ScrollTrigger.addEventListener('refresh', () => { half = row.scrollWidth / 2; });
     G.ticker.add(() => {
       if (!st.isActive) return;
       const v = st.getVelocity();
       if (v) dir = v < 0 ? -1 : 1;
-      x -= (1.1 + Math.min(14, Math.abs(v) / 260)) * dir;
+      x -= (1.1 + kick + Math.min(14, Math.abs(v) / 260)) * dir;
+      kick *= .95;
       if (x <= -half) x += half; else if (x > 0) x -= half;
       row.style.transform = `translate3d(${x}px,0,0)`;
     });
-  };
+  });
 
   // The fiche tour: pinned stage, a camera glides over the real page, a pen frames each box.
   const stage = $('[data-tour]');
