@@ -27,7 +27,7 @@
 html[data-field="teal"], html:not(.js) [data-field="teal"] { --bg: var(--c-teal); --fg: var(--c-night); --fg-2: rgb(5 34 44 / .84); --line: rgb(5 34 44 / .2); --btn: var(--c-night); --btn-fg: var(--c-chalk); --soft: rgb(255 255 255 / .42); --logo-accent: var(--c-night); --logo-pro: var(--c-night); --focus: var(--c-night); }
 html[data-field="coral"], html:not(.js) [data-field="coral"] { --bg: var(--c-coral); --fg: var(--c-night); --fg-2: rgb(5 34 44 / .84); --line: rgb(5 34 44 / .2); --btn: var(--c-night); --btn-fg: var(--c-chalk); --soft: rgb(255 255 255 / .42); --logo-accent: var(--c-night); --logo-pro: var(--c-night); --focus: var(--c-night); }
 html[data-field="peach"], html:not(.js) [data-field="peach"] { --bg: var(--c-peach); --fg: var(--c-night); --fg-2: rgb(5 34 44 / .84); --line: rgb(5 34 44 / .2); --btn: var(--c-night); --btn-fg: var(--c-chalk); --soft: rgb(255 255 255 / .42); --logo-accent: var(--c-night); --logo-pro: var(--c-night); --focus: var(--c-night); }
-html[data-field="ocean"], html:not(.js) [data-field="ocean"] { --bg: var(--c-ocean); --fg: var(--c-chalk); --fg-2: rgb(250 247 234 / .86); --line: rgb(250 247 234 / .2); --btn: var(--c-chalk); --btn-fg: var(--c-night); --soft: rgb(250 247 234 / .12); --logo-accent: var(--c-teal); --logo-pro: var(--c-chalk); --focus: var(--c-chalk); }
+html[data-field="ocean"], html:not(.js) [data-field="ocean"] { --bg: var(--c-ocean); --fg: var(--c-chalk); --fg-2: rgb(250 247 234 / .94); --line: rgb(250 247 234 / .2); --btn: var(--c-chalk); --btn-fg: var(--c-night); --soft: rgb(250 247 234 / .12); --logo-accent: var(--c-teal); --logo-pro: var(--c-chalk); --focus: var(--c-chalk); }
 html[data-field="chalk"], html:not(.js) [data-field="chalk"] { --bg: var(--c-chalk); --fg: var(--c-night); --fg-2: #47585C; --line: rgb(5 34 44 / .14); --btn: var(--c-night); --btn-fg: var(--c-chalk); --soft: rgb(5 34 44 / .07); --logo-accent: var(--c-teal); --logo-pro: var(--c-teal-ink); --focus: var(--c-teal-ink); }
 html[data-field="night"], html:not(.js) [data-field="night"] { --bg: var(--c-night); --fg: var(--c-chalk); --fg-2: rgb(250 247 234 / .72); --line: rgb(250 247 234 / .16); --btn: var(--c-teal); --btn-fg: var(--c-night); --soft: rgb(250 247 234 / .1); --logo-accent: var(--c-teal); --logo-pro: var(--c-teal); --focus: var(--c-teal); }
 @media (prefers-color-scheme: dark) {
@@ -287,6 +287,13 @@ html:not(.js) .matrix { display: none; }
 
 /* Formules: two cards, the chosen one gets the hard shadow (Gumroad) */
 .packs { padding-block: clamp(90px, 10vw, 140px); }
+/* Packs and coaching are the two frosted moments: soft pools of light behind them give the glass something to frost.
+   Light fields get lighter pools, dark ones darker, and each pool fades out inside its section (no seam at the edge). */
+.packs { background-image: radial-gradient(30% 36% at 78% 28%, rgb(158 223 219 / .75), transparent 70%), radial-gradient(28% 34% at 22% 74%, rgb(254 217 183 / .8), transparent 70%), radial-gradient(20% 24% at 56% 56%, rgb(248 185 176 / .4), transparent 70%); }
+.coaching { background-image: radial-gradient(30% 40% at 76% 40%, rgb(20 189 182 / .14), transparent 70%), radial-gradient(36% 46% at 26% 66%, rgb(5 34 44 / .55), transparent 70%); }
+@media (prefers-color-scheme: dark) {
+  .packs { background-image: radial-gradient(32% 40% at 76% 30%, rgb(20 189 182 / .22), transparent 70%), radial-gradient(36% 46% at 26% 66%, rgb(0 101 127 / .6), transparent 70%); }
+}
 .packs__head { max-width: 760px; }
 .packs__head .chooser { margin-top: 26px; }
 .chooser { margin: 28px 0 0; padding: 0; border: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 22px; font: 400 clamp(1.2rem, 1.8vw, 1.5rem)/1.3 var(--serif); }
@@ -305,9 +312,12 @@ html:not(.js) .matrix { display: none; }
 .chooser input:checked + span { background: var(--fg); color: var(--bg); }
 .chooser legend { margin-right: 10px; padding-top: 9px; }
 .packs__grid { margin-top: clamp(36px, 4vw, 56px); display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start; }
-.pack { position: relative; display: flex; flex-direction: column; padding: clamp(26px, 3vw, 40px); border-radius: var(--radius); background: var(--c-card); color: var(--fg); border: 2px solid var(--fg); transition: transform .5s var(--ease), box-shadow .5s var(--ease), background-color .5s; }
+.pack { position: relative; display: flex; flex-direction: column; padding: clamp(26px, 3vw, 40px); border-radius: var(--radius); color: var(--fg); background: rgb(255 255 255 / .4); border: 2px solid transparent;
+  -webkit-backdrop-filter: blur(22px) saturate(1.7); backdrop-filter: blur(22px) saturate(1.7);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .8), inset 0 0 0 1px rgb(255 255 255 / .3), 0 30px 60px -30px rgb(5 34 44 / .5); transition: transform .5s var(--ease), box-shadow .5s var(--ease), background-color .5s; }
 .packs:has(input[value="elite"]:checked) .pack--elite,
-.packs:has(input[value="decouverte"]:checked) .pack--decouverte { transform: translate(-6px, -6px); box-shadow: 10px 10px 0 var(--fg); background: var(--c-teal); color: var(--c-night); border-color: var(--c-night); }
+.packs:has(input[value="decouverte"]:checked) .pack--decouverte { transform: translateY(-8px); background: color-mix(in srgb, var(--c-teal) 88%, transparent); color: var(--c-night);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .6), 0 40px 70px -30px rgb(0 101 127 / .8); }
 .packs:has(input[value="elite"]:checked) .pack--elite .btn,
 .packs:has(input[value="decouverte"]:checked) .pack--decouverte .btn { background: var(--c-night); color: var(--c-chalk); }
 .pack__flag { align-self: flex-start; margin-bottom: 14px; padding: 6px 14px; border-radius: 999px; background: var(--c-night); color: var(--c-peach); font: 800 .82rem var(--sans); }
@@ -326,7 +336,18 @@ html:not(.js) .matrix { display: none; }
 /* Coaching */
 .coaching { padding-block: clamp(90px, 10vw, 140px); }
 .coaching__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px 64px; align-items: center; }
-.slip { padding: clamp(24px, 3vw, 36px); border-radius: var(--radius); background: var(--c-white); color: var(--c-night); border: 2px solid var(--c-night); box-shadow: 10px 10px 0 var(--c-night); rotate: 1.5deg; }
+.slip { padding: clamp(24px, 3vw, 36px); border-radius: var(--radius); color: var(--c-night); background: rgb(255 255 255 / .82); border: 2px solid transparent;
+  -webkit-backdrop-filter: blur(22px) saturate(1.7); backdrop-filter: blur(22px) saturate(1.7); box-shadow: inset 0 1px 0 #fff, 0 40px 80px -30px rgb(5 34 44 / .8); rotate: 1.5deg; }
+/* overrides for the frosted panes, placed after their base rules */
+@media (prefers-color-scheme: dark) {
+  .pack { background: rgb(255 255 255 / .08); box-shadow: inset 0 1px 0 rgb(255 255 255 / .22), inset 0 0 0 1px rgb(255 255 255 / .09), 0 30px 60px -30px rgb(0 0 0 / .6); }
+}
+@media (prefers-reduced-transparency: reduce) {   /* frosted panes turn opaque, the pools go */
+  .packs, .coaching { background-image: none; }
+  .pack, .slip { -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .pack { background: var(--c-card); } .slip { background: var(--c-white); }
+  .packs:has(input[value="elite"]:checked) .pack--elite, .packs:has(input[value="decouverte"]:checked) .pack--decouverte { background: var(--c-teal); }
+}
 .slip__head { display: flex; justify-content: space-between; gap: 16px; padding-bottom: 14px; border-bottom: 2px solid var(--c-night); font: 800 .95rem var(--sans); }
 .slip__list li { display: grid; grid-template-columns: 24px minmax(0, 1fr); column-gap: 16px; padding: 14px 0; border-bottom: 1px solid rgb(5 34 44 / .14); }
 .slip__list b { grid-column: 2; font: 800 1.08rem/1.3 var(--sans); }
