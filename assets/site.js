@@ -129,8 +129,11 @@
   // (Semaine 1 to 14, Révisions, Session), each block lights up during its period, and "Tu es ici" turns on.
   const weekBig = $('[data-weekbig]');
   const bands = $$('.band').map(b => { const s = getComputedStyle(b); return [b, parseFloat(s.getPropertyValue('--from')), parseFloat(s.getPropertyValue('--to'))]; });
+  const marks = $$('.axis__marks li').map(li => [li, parseFloat(li.style.getPropertyValue('--at'))]);
   let weekTxt = '';
   const setSemester = (p, you) => {
+    axis.style.setProperty('--p', p.toFixed(4)); // playhead
+    marks.forEach(([li, at]) => li.classList.toggle('is-past', p >= at - .001));
     const wk = Math.min(14, Math.floor(p / .7 * 14) + 1);
     const txt = p < .7 ? `Semaine ${wk}` : p < .9 ? 'Révisions' : 'Session';
     if (weekBig && txt !== weekTxt) weekBig.textContent = weekTxt = txt;
