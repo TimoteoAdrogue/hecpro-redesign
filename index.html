@@ -240,22 +240,37 @@
       <div class="wrap">
         <div class="semester__head">
           <h2 id="methode-t" class="poster">Prends de l’avance dès le premier cours. Garde&#8209;la jusqu’aux examens.</h2>
-          <p class="week" aria-hidden="true" data-weekbig>Comprendre plus vite</p>
+          <p class="week" aria-hidden="true" data-weekbig>Semaine 1</p>
         </div>
         <p class="sub semester__sub">Du premier cours aux examens, avance avec une direction claire, des supports déjà structurés et les bons outils au bon moment.</p>
-      <div class="axis reveal" data-axis>
+        <!-- CONFIRM: UNIL autumn semester start (2026-09-14 assumed), 14 weeks of courses, January session; and which pack serves which period -->
+      <div class="axis reveal" data-axis data-start="2026-09-14" data-weeks="14">
         <div class="axis__line"><span class="axis__draw"></span></div>
-        <div class="band" style="--from:0;--to:.4">
+        <ol class="axis__marks" aria-hidden="true">
+          <li style="--at:0">Semaine 1</li>
+          <li style="--at:.3">Semaine 7</li>
+          <li style="--at:.7">Semaine 14</li>
+          <li style="--at:.82">Révisions</li>
+          <li style="--at:1">Session de janvier</li>
+        </ol>
+        <p class="axis__you" data-you hidden>Tu es ici · semaine <b data-week></b></p>
+        <div class="band" style="--from:0;--to:.7">
           <h3>Comprendre plus vite</h3>
           <p>Tu ne restes plus bloqué après un cours. Les notions sont reprises clairement pour que tu comprennes ce que tu fais et que tu puisses avancer.</p>
+          <span class="band__when">Semaines 1 à 14</span>
+          <span class="pack-tag">Découverte</span>
         </div>
-        <div class="band" style="--from:.3;--to:.7">
+        <div class="band" style="--from:0;--to:1">
           <h3>Gagner un temps précieux</h3>
           <p>Plus besoin de passer des heures à chercher, trier et reconstruire tes propres supports. L’essentiel est déjà structuré pour toi.</p>
+          <span class="band__when">Tout le semestre</span>
+          <span class="pack-tag">Découverte et Elite</span>
         </div>
-        <div class="band" style="--from:.6;--to:1">
+        <div class="band" style="--from:.4;--to:1"><!-- week 9 starts at 8/14 of the .7 that the 14 weeks span -->
           <h3>Arriver prêt aux examens</h3>
           <p>Quand les examens approchent, tu ne repars pas de zéro. Tu sais déjà ce que tu maîtrises, ce qu’il reste à travailler et comment t’entraîner.</p>
+          <span class="band__when">De la semaine 9 à la session</span>
+          <span class="pack-tag">Elite</span>
         </div>
       </div>
       </div>

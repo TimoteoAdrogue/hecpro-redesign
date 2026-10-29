@@ -125,17 +125,34 @@
     if (statN) statN.textContent = on ? crossedUpTo[on - 1] : 0;
   };
 
-  // The semester, driven by one progress value: the line runs, each of the client's three blocks lights up
-  // in turn, and the big word shows the title of the block in focus.
+  // The semester, driven by one progress value: the line runs over the weeks, the big counter follows
+  // (Semaine 1 to 14, Révisions, Session), each block lights up during its period, and "Tu es ici" turns on.
   const weekBig = $('[data-weekbig]');
-  const axis = $('[data-axis]');
-  const bands = $$('.band').map(b => { const s = getComputedStyle(b); return [b, parseFloat(s.getPropertyValue('--from')), parseFloat(s.getPropertyValue('--to')), $('h3', b).textContent]; });
+  const bands = $$('.band').map(b => { const s = getComputedStyle(b); return [b, parseFloat(s.getPropertyValue('--from')), parseFloat(s.getPropertyValue('--to'))]; });
   let weekTxt = '';
-  const setSemester = p => {
-    let focus = bands[0];
-    bands.forEach(band => { const [b, from, to] = band; const lit = p >= from - .001 && p <= to + .001; b.classList.toggle('is-lit', lit); if (p >= from - .001) focus = band; });
-    if (weekBig && focus && focus[3] !== weekTxt) weekBig.textContent = weekTxt = focus[3];
+  const setSemester = (p, you) => {
+    const wk = Math.min(14, Math.floor(p / .7 * 14) + 1);
+    const txt = p < .7 ? `Semaine ${wk}` : p < .9 ? 'Révisions' : 'Session';
+    if (weekBig && txt !== weekTxt) weekBig.textContent = weekTxt = txt;
+    bands.forEach(([b, from, to]) => b.classList.toggle('is-lit', p >= from - .001 && p <= to + .001));
+    if (you) you.classList.toggle('is-on', youAt >= 0 && p >= youAt);
   };
+
+  // "Tu es ici": week of the semester, only while the semester runs.
+  const axis = $('[data-axis]');
+  let youAt = -1;
+  if (axis) {
+    const weeks = +axis.dataset.weeks;
+    const days = Math.floor((Date.now() - new Date(axis.dataset.start + 'T00:00:00')) / 864e5);
+    const wk = Math.floor(days / 7) + 1;
+    if (days >= 0 && wk <= weeks) {
+      const you = $('[data-you]', axis);
+      youAt = (wk - .5) / weeks * .7;
+      $('[data-week]', you).textContent = wk;
+      you.style.setProperty('--you', youAt.toFixed(4));
+      you.hidden = false;
+    }
+  }
 
   // Hero sheets enter only once their picture is decoded: no white card falling, no pop-in.
   $$('.hero .paper').forEach(pp => {
@@ -164,7 +181,7 @@
   wire($('[data-menu]'), '[data-open-menu]');
   wire($('[data-reader]'), '[data-open-reader]');
 
-  if (!G || calm) { $('.hero__title').style.opacity = 1; setStat(1); return; }
+  if (!G || calm) { $('.hero__title').style.opacity = 1; setStat(1); if (weekBig) weekBig.textContent = '14 semaines'; return; }
 
   // Headlines rise line by line (masked): the hero one on load, the others as they enter.
   // Split after the brand font is in, so lines are measured once and never re-split mid-scroll.
@@ -226,11 +243,21 @@
     if (!axis) return;
     axis.classList.add('is-scrub');
     const draw = $('.axis__draw', axis);
-    const update = p => { G.set(draw, phone ? { scaleX: 1, scaleY: p } : { scaleX: p }); setSemester(p); };
+    const you = $('[data-you]', axis);
+    const update = p => { G.set(draw, phone ? { scaleX: 1, scaleY: p } : { scaleX: p }); setSemester(p, you); };
     update(0);
     ScrollTrigger.create(phone || short
       ? { trigger: axis, start: 'top 75%', end: 'bottom 55%', scrub: .5, onUpdate: st => update(st.progress) }
       : { trigger: '[data-semester]', start: 'top top', end: '+=95%', pin: true, scrub: .5, onUpdate: st => update(st.progress) });
+    // when the timeline is a little taller than the screen, the pinned view pans down with the weeks,
+    // so the exam block (week 9 to the session) is seen while the week counter stays on screen
+    const inner = $('.semester__pin > .wrap'), pinEl = $('[data-semester]');
+    const pan = () => { // never further than keeps the counter 12px under the header
+      const wkTop = weekBig.getBoundingClientRect().top - pinEl.getBoundingClientRect().top - G.getProperty(inner, 'y');
+      return -Math.max(0, Math.min(pinEl.offsetHeight - innerHeight, wkTop - $('.top').offsetHeight - 12));
+    };
+    if (!(phone || short)) G.to(inner, { y: pan, ease: 'none',
+      scrollTrigger: { trigger: '[data-semester]', start: 'top top', end: '+=95%', scrub: .5, invalidateOnRefresh: true } });
   };
 
   // Avis: the belt of stickers slides left as the page scrolls down.

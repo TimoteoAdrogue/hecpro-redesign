@@ -279,15 +279,31 @@ html:not(.js) .matrix { display: none; }
 .semester__sub { margin-top: 18px; color: var(--fg); opacity: .8; }
 .semester__head { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 32px; align-items: end; }
 /* the block title in focus: wraps, and keeps room for its longest version so nothing below moves when it changes */
-.week { justify-self: end; text-align: right; font: 900 clamp(2.4rem, 5vw, 5rem)/.88 var(--sans); font-stretch: 75%; text-transform: uppercase; max-width: 9ch; min-height: 2.64em; display: flex; align-items: flex-end; justify-content: flex-end; text-wrap: balance; }
-.axis { position: relative; margin-top: clamp(56px, 6vw, 88px); padding-top: 64px; display: grid; gap: 36px; }
+.week { justify-self: end; text-align: right; font: 900 clamp(3.4rem, 9vw, 8.4rem)/.82 var(--sans); font-stretch: 75%; text-transform: uppercase; white-space: nowrap; }
+/* the whole timeline has to fit the pinned screen: a tighter heading, wide band texts, less air around the line */
+.semester .poster { font-size: clamp(2.3rem, 4.9vw, 4.6rem); }
+.axis { position: relative; margin-top: clamp(28px, 3vw, 44px); padding-top: 64px; display: grid; gap: 16px; }
 .axis__line { position: absolute; left: 0; right: 0; top: 30px; height: 2px; background: var(--line); }
 .axis__draw { position: absolute; inset: 0; background: var(--fg); transform: scaleX(0); transform-origin: left; transition: transform 1.6s var(--ease) .2s; }
 .axis.is-in .axis__draw, html:not(.js) .axis__draw { transform: scaleX(1); }
 .axis__line { height: 4px; border-radius: 4px; }
+.axis__marks li { position: absolute; top: 0; left: calc(var(--at) * 100%); transform: translateX(-50%); font: 700 .86rem var(--sans); color: var(--fg-2); white-space: nowrap; }
+.axis__marks li:first-child { transform: none; }
+.axis__marks li:last-child { transform: translateX(-100%); }
+.axis__marks li::after { content: ""; position: absolute; left: 50%; top: 26px; width: 1px; height: 10px; background: var(--fg-2); }
+.axis__marks li:first-child::after { left: 0; }
+.axis__marks li:last-child::after { left: 100%; }
+/* "Tu es ici": today's week of the semester, shown only while the semester runs */
+.axis__you { position: absolute; top: 40px; left: calc(var(--you) * 100%); transform: translateX(-12px); padding: 4px 10px 5px 12px; border-left: 2px solid var(--c-night); font: 800 .9rem var(--sans); color: var(--c-night); white-space: nowrap; }
+.axis__you::before { content: ""; position: absolute; left: -7px; top: -16px; width: 12px; height: 12px; border-radius: 50%; background: var(--c-night); box-shadow: 0 0 0 4px var(--bg); }
+.axis.is-scrub .axis__you { opacity: 0; translate: 0 8px; transition: opacity .4s, translate .5s var(--ease); } /* appears when the line reaches today */
+.axis.is-scrub .axis__you.is-on { opacity: 1; translate: none; }
 .band { position: relative; margin-left: calc(var(--from) * 100%); width: calc((var(--to) - var(--from)) * 100%); padding: 18px 22px 20px; border-radius: 20px; background: rgb(255 255 255 / .45); display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 16px; row-gap: 6px; align-items: baseline; transition: background-color .4s, transform .4s var(--ease); }
 .band h3 { font: 800 1.3rem/1.2 var(--sans); }
-.band p { grid-column: 1 / -1; color: var(--fg-2); max-width: 46ch; font-size: 1.02rem; }
+.band p { grid-column: 1 / -1; color: var(--fg-2); max-width: 78ch; font-size: 1.02rem; }
+.band .pack-tag { grid-column: 2; grid-row: 1; }
+.band__when { display: none; }
+.pack-tag { padding: 4px 12px; border-radius: 999px; background: var(--c-night); color: var(--c-peach); font: 700 .8rem var(--sans); white-space: nowrap; }
 .axis.is-scrub .band { background: rgb(255 255 255 / .22); }
 .axis.is-scrub .band.is-lit { background: var(--c-white); transform: translateY(-3px); }
 
@@ -456,6 +472,14 @@ html:not(.js) .foot, .foot { background: var(--c-night); color: var(--c-chalk); 
 /* The client's nav labels are long: six fit from 1301px, four down to 1081px, below that the menu button takes over */
 @media (max-width: 1300px) { .top__nav a:nth-child(n+5) { display: none; } }
 
+/* short laptop screens (1280x720, 1366x768): the pinned timeline tightens so the exam block still comes into view */
+@media (min-width: 768px) and (max-height: 800px) {
+  .semester__pin { padding-block: calc(var(--head) + 2vh) 3vh; }
+  .semester__sub { margin-top: 10px; }
+  .axis { padding-top: 58px; gap: 12px; }
+  .band { padding: 12px 20px 14px; }
+}
+
 /* Tablet */
 @media (max-width: 1080px) {
   .top__nav, .top__login { display: none; }
@@ -465,7 +489,7 @@ html:not(.js) .foot, .foot { background: var(--c-night); color: var(--c-chalk); 
   .stat__kicker, .stat__num, .stat__line, .stat__grid .matrix { grid-column: 1; grid-row: auto; }
   .stat__num { grid-row: auto; font-size: min(44vw, 40vh); }
   .semester__head { grid-template-columns: 1fr; }
-  .week { justify-self: start; text-align: left; justify-content: flex-start; max-width: none; min-height: 1.76em; font-size: clamp(2rem, 9vw, 3rem); }
+  .week { justify-self: start; text-align: left; }
 }
 
 /* Phone */
@@ -506,10 +530,14 @@ html:not(.js) .foot, .foot { background: var(--c-night); color: var(--c-chalk); 
   .subj__n { font-size: 10rem; }
   .semester__pin { min-height: 0; display: block; padding-block: 90px 80px; }
   .axis { padding-left: 30px; padding-top: 0; gap: 18px; margin-top: 36px; }
+  .axis__marks { display: none; }
+  .axis__you { position: relative; top: auto; left: auto; transform: none; justify-self: start; border-left: 0; padding-left: 0; }
+  .axis__you::before { display: block; left: -30px; top: 50%; translate: 0 -50%; }
     .axis__line { display: block; left: 6px; right: auto; top: 8px; bottom: 8px; width: 4px; height: auto; }
   .axis__draw { transform-origin: center top; }
       .band { margin-left: 0; width: 100%; padding: 16px 18px; }
   .band::after { content: ""; position: absolute; left: -31px; top: 24px; width: 14px; height: 14px; border-radius: 50%; border: 3px solid var(--c-night); background: var(--bg); }
+  .band__when { display: block; grid-column: 1 / -1; margin-top: 4px; font: 700 .85rem var(--sans); color: var(--fg-2); }
   .packs__grid { grid-template-columns: 1fr; }
   .packs:has(input[value="elite"]:checked) .pack--elite,
   .packs:has(input[value="decouverte"]:checked) .pack--decouverte { transform: translate(-4px, -4px); box-shadow: 6px 6px 0 var(--fg); }
